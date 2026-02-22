@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Gateway Admin V8.1</title>
+    <title>Key Login Admin V1.1</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@500;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
@@ -155,7 +155,6 @@
         }
         .theme-btn:hover { background: var(--accent); color: #000; }
         
-        /* --- DPMODS PANEL --- */
         .dp-card { background: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.01) 100%); border: 1px solid var(--border); border-radius: 20px; padding: 25px; text-align: center; margin-top: 20px; position: relative; overflow: hidden; }
         .dp-card::after { content: ''; position: absolute; top:0; left:0; width:100%; height:4px; background: linear-gradient(90deg, transparent, var(--accent), transparent); }
     </style>
@@ -345,15 +344,15 @@
         let curTheme = localStorage.getItem("gateway_theme") || "cyberpunk";
 
         // ENCRYPTED CREDITS
-        const _s1 = "R2F0ZXdheSBQYW5lbCBWOC4x"; 
-        const _s2 = "RFBNb2Rz";
+        const _s1 = "U2VydmVyIEtleSBBZG1pbiB2MS4x"; 
+        const _s2 = "UExvbmdEZXY=";
 
         const DEFAULT_DATA = { 
             "Config": { 
-                "Title": "DPMods VIP", "Subtitle": "GATEWAY V8.1 // ONLINE", "AdminUrl": "", "UpdateUrl": "",
+                "Title": "PLongDev VIP", "Subtitle": "Server Key Admin v1.1", "AdminUrl": "", "UpdateUrl": "",
                 "AppVersion": 1, "KeyDurationHours": 24,
                 "Api": { "BaseUrl": "", "Token": "" },
-                "Texts": { "BtnAdmin": "ADMIN SUPPORT", "BtnKey": "GET KEY", "BtnLogin": "ACTIVATE SYSTEM", "Hint": "ENTER ACCESS KEY" }
+                "Texts": { "BtnAdmin": "Hỗ Trợ", "BtnKey": "Get Key", "BtnLogin": "Xác Nhận", "Hint": "Nhập Key Vào Đây" }
             }, 
             "BannedDevices": {}, "ActivatedUsers": {}, "ValidKeys": {} 
         };
