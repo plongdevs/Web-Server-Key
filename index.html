@@ -387,12 +387,23 @@
     </div>
 
     <div id="modalEdit" class="modal-overlay">
-        <div class="modal-content">
-            <h3 style="margin-top:0;">Edit Key</h3>
+        <div class="modal-content" id="modalEditContent">
+            <div style="display:flex; align-items:center; gap:10px; margin-bottom:20px;">
+                <h3 style="margin:0; flex:1;" id="editModalTitle">Edit Key</h3>
+                <span id="editVipBadge" class="vip-badge" style="display:none;"><i class="fas fa-crown"></i> VIP</span>
+            </div>
             <input type="hidden" id="editOld">
-            <div class="inp-group"><label class="inp-label">KEY STRING</label><input type="text" class="input-std" id="editNew" style="padding-left:15px"></div>
+            <input type="hidden" id="editIsVip">
+            <div class="inp-group">
+                <label class="inp-label">TÊN KEY</label>
+                <input type="text" class="input-std" id="editNew" style="padding-left:15px">
+            </div>
+            <div class="inp-group" style="margin-bottom:20px;">
+                <label class="inp-label">THỜI HẠN (GIỜ)</label>
+                <input type="number" class="input-std" id="editHours" min="1" style="padding-left:15px">
+            </div>
             <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
-                <button class="btn-block" style="margin-top:0" onclick="saveKeyEdit()">SAVE</button>
+                <button class="btn-block" style="margin-top:0" id="editSaveBtn" onclick="saveKeyEdit()">SAVE</button>
                 <button class="btn-block" style="margin-top:0; background:transparent; border:1px solid var(--border); color:var(--muted)" onclick="closeModal('modalEdit')">CANCEL</button>
             </div>
         </div>
@@ -818,14 +829,68 @@
             syncDB();
         }
 
-        function saveKeyEdit() {
-            const oldK = document.getElementById('editOld').value;
-            const newK = document.getElementById('editNew').value;
-            if(newK && newK !== oldK) {
-                dbData.ValidKeys[newK] = dbData.ValidKeys[oldK];
-                delete dbData.ValidKeys[oldK];
-                syncDB();
+        function editKey(key) {
+            const val    = dbData.ValidKeys[key];
+            const isVip  = typeof val === 'object' && val.VIP === true;
+            const hours  = typeof val === 'object' ? (val.Hours || '') : '';
+
+            document.getElementById('editOld').value   = key;
+            document.getElementById('editNew').value   = key;
+            document.getElementById('editHours').value = hours;
+            document.getElementById('editIsVip').value = isVip ? '1' : '0';
+
+            // Đổi màu & title theo loại key
+            const content = document.getElementById('modalEditContent');
+            const badge   = document.getElementById('editVipBadge');
+            const title   = document.getElementById('editModalTitle');
+            const saveBtn = document.getElementById('editSaveBtn');
+
+            if (isVip) {
+                content.style.borderColor = 'rgba(255,215,0,0.35)';
+                title.style.color = '#ffd700';
+                badge.style.display = 'inline-flex';
+                saveBtn.style.background = '#ffd700';
+                saveBtn.style.color = '#000';
+            } else {
+                content.style.borderColor = '';
+                title.style.color = '';
+                badge.style.display = 'none';
+                saveBtn.style.background = '';
+                saveBtn.style.color = '';
             }
+
+            openModal('modalEdit');
+        }
+
+        function saveKeyEdit() {
+            const oldK  = document.getElementById('editOld').value;
+            const newK  = document.getElementById('editNew').value.trim();
+            const hours = parseInt(document.getElementById('editHours').value) || 0;
+            const isVip = document.getElementById('editIsVip').value === '1';
+
+            if (!newK) return;
+
+            // Lấy data cũ — giữ nguyên nếu là object, tạo mới nếu là string cũ
+            let existing = dbData.ValidKeys[oldK];
+            if (typeof existing !== 'object' || existing === null) {
+                existing = { CreatedAt: new Date().toISOString() };
+            }
+
+            // Cập nhật Hours nếu nhập hợp lệ
+            if (hours > 0) existing.Hours = hours;
+
+            // Giữ nguyên VIP flag
+            existing.VIP = isVip;
+
+            // Đổi tên key nếu có thay đổi
+            if (newK !== oldK) {
+                dbData.ValidKeys[newK] = existing;
+                delete dbData.ValidKeys[oldK];
+            } else {
+                dbData.ValidKeys[oldK] = existing;
+            }
+
+            syncDB();
             closeModal('modalEdit');
         }
 
@@ -896,8 +961,6 @@
         function copy(txt) { navigator.clipboard.writeText(txt).then(() => showToast("Copied")); }
         function openModal(id) { document.getElementById(id).classList.add('open'); }
         function closeModal(id) { document.getElementById(id).classList.remove('open'); }
-        function editKey(key) { document.getElementById('editOld').value=key; document.getElementById('editNew').value=key; openModal('modalEdit'); }
-        
         function editDevice(dev, isBanned) {
             document.getElementById('editDeviceOld').value = dev;
             document.getElementById('editDeviceNew').value = dev;
