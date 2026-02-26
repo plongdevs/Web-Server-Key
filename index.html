@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Key Login Admin V1.1</title>
+    <title>Server Key Admin V1.1</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@500;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
@@ -422,8 +422,19 @@
         function saveUrlAndConnect() {
             let inp = document.getElementById('inputDbUrl').value.trim();
             if(!inp) return showToast("Invalid URL");
-            if(!inp.startsWith("http")) inp = "https://" + inp;
-            if(!inp.includes("firebaseio.com")) inp += ".firebaseio.com";
+        
+            if(!inp.startsWith("http")) {
+                inp = "https://" + inp;
+            }
+        
+            // CHỈ thêm domain nếu người dùng nhập sai hoàn toàn
+            if(
+                !inp.includes("firebaseio.com") &&
+                !inp.includes("firebasedatabase.app")
+            ){
+                inp += ".firebaseio.com";
+            }
+        
             localStorage.setItem("gateway_db_url", inp);
             dbUrl = inp;
             appInit();
