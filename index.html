@@ -158,6 +158,36 @@
         .dp-card { background: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.01) 100%); border: 1px solid var(--border); border-radius: 20px; padding: 25px; text-align: center; margin-top: 20px; position: relative; overflow: hidden; }
         .dp-card::after { content: ''; position: absolute; top:0; left:0; width:100%; height:4px; background: linear-gradient(90deg, transparent, var(--accent), transparent); }
 
+        /* --- KEY CHOICE MODAL --- */
+        .choice-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 8px; }
+        .choice-card {
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            gap: 12px; padding: 28px 16px; border-radius: 18px; cursor: pointer;
+            border: 1.5px solid var(--border); background: rgba(255,255,255,0.03);
+            transition: 0.2s; text-align: center;
+        }
+        .choice-card:active { transform: scale(0.96); }
+        .choice-card.normal:hover { border-color: var(--accent); background: rgba(0,229,255,0.07); }
+        .choice-card.vip:hover    { border-color: #ffd700;       background: rgba(255,215,0,0.08); }
+        .choice-card .choice-icon { font-size: 2rem; line-height: 1; }
+        .choice-card .choice-title { font-size: 0.9rem; font-weight: 800; letter-spacing: 0.3px; }
+        .choice-card .choice-desc  { font-size: 0.68rem; color: var(--muted); line-height: 1.4; }
+
+        /* --- VIP KEYS --- */
+        .vip-card::before { content:''; position: absolute; top:0; left:0; width:4px; height:100%; background: #ffd700; box-shadow: 2px 0 15px #ffd700; }
+        .vip-badge { 
+            background: rgba(255,215,0,0.12); color: #ffd700; 
+            border: 1px solid rgba(255,215,0,0.35);
+            padding: 3px 9px; border-radius: 7px; font-size:0.6rem; 
+            font-weight:800; letter-spacing:0.5px; display:inline-flex; align-items:center; gap:5px;
+        }
+        .vip-hours-pill {
+            background: rgba(255,215,0,0.08); color: #ffd700;
+            border: 1px solid rgba(255,215,0,0.2);
+            padding: 3px 10px; border-radius: 8px; font-size:0.65rem;
+            font-family: 'JetBrains Mono', monospace; display:inline-flex; align-items:center; gap:5px;
+        }
+
         /* --- MAINTENANCE --- */
         .maint-card { border-color: rgba(255,165,0,0.35) !important; }
         .maint-card h4 { color: #ffaa00 !important; }
@@ -204,21 +234,30 @@
         </div>
 
         <div id="viewDashboard" class="hidden fade-in">
-            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-bottom:20px;">
+            <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:10px; margin-bottom:20px;">
                 <div class="item-card" style="align-items:center; padding:15px; margin:0; border-color: rgba(0,229,255,0.2);">
                     <span style="font-size:1.8rem; font-weight:800; color:var(--accent);" id="statKeys">0</span>
-                    <span style="font-size:0.65rem; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing: 1px;">Valid Keys</span>
+                    <span style="font-size:0.6rem; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing: 1px;">Keys</span>
+                </div>
+                <div class="item-card" style="align-items:center; padding:15px; margin:0; border-color: rgba(255,215,0,0.25);">
+                    <span style="font-size:1.8rem; font-weight:800; color:#ffd700;" id="statVip">0</span>
+                    <span style="font-size:0.6rem; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing: 1px;">VIP Keys</span>
                 </div>
                 <div class="item-card" style="align-items:center; padding:15px; margin:0; border-color: rgba(0,255,157,0.2);">
                     <span style="font-size:1.8rem; font-weight:800; color:var(--green);" id="statDevs">0</span>
-                    <span style="font-size:0.65rem; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing: 1px;">Devices</span>
+                    <span style="font-size:0.6rem; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing: 1px;">Devices</span>
                 </div>
             </div>
 
             <div id="tabKeys">
-                <div class="controls">
+                <div class="controls" style="gap:8px;">
                     <div class="search"><i class="fas fa-search"></i><input type="text" class="input-std" id="searchKeys" placeholder="Search Keys..." onkeyup="renderKeys()"></div>
-                    <button class="btn-main" onclick="openModal('modalKey')"><i class="fas fa-plus"></i> NEW</button>
+                    <button class="btn-main" onclick="openModal('modalKeyChoice')"><i class="fas fa-plus"></i> NEW</button>
+                </div>
+                <div class="chips" style="margin-bottom:12px;">
+                    <div class="chip active" onclick="setKeyFilter('all', this)">Tất cả</div>
+                    <div class="chip" onclick="setKeyFilter('normal', this)">Key thường</div>
+                    <div class="chip" onclick="setKeyFilter('vip', this)"><i class="fas fa-crown" style="font-size:0.7rem;color:#ffd700;margin-right:4px;"></i>VIP</div>
                 </div>
                 <div id="listKeys"></div>
             </div>
@@ -313,11 +352,33 @@
         </div>
     </div>
 
+    <!-- MODAL: CHỌN LOẠI KEY -->
+    <div id="modalKeyChoice" class="modal-overlay">
+        <div class="modal-content" style="max-width:320px;">
+            <h3 style="margin:0 0 6px 0; font-size:1rem;">Tạo Key Mới</h3>
+            <p style="color:var(--muted); font-size:0.75rem; margin:0 0 20px 0;">Chọn loại key bạn muốn tạo</p>
+            <div class="choice-grid">
+                <div class="choice-card normal" onclick="closeModal('modalKeyChoice'); openModal('modalKey');">
+                    <div class="choice-icon">🔑</div>
+                    <div class="choice-title" style="color:var(--accent);">Key Thường</div>
+                    <div class="choice-desc">Random suffix<br>Dùng 1 lần rồi hết</div>
+                </div>
+                <div class="choice-card vip" onclick="closeModal('modalKeyChoice'); openModal('modalVipKey');">
+                    <div class="choice-icon">👑</div>
+                    <div class="choice-title" style="color:#ffd700;">Key Custom</div>
+                    <div class="choice-desc">Tên tự đặt<br>Tái sử dụng được</div>
+                </div>
+            </div>
+            <button class="btn-block" style="margin-top:16px; background:transparent; border:1px solid var(--border); color:var(--muted);" onclick="closeModal('modalKeyChoice')">HỦY</button>
+        </div>
+    </div>
+
     <div id="modalKey" class="modal-overlay">
         <div class="modal-content">
             <h3 style="margin-top:0;">Generate Keys</h3>
             <div class="inp-group"><label class="inp-label">PREFIX</label><input type="text" class="input-std" id="keyPrefix" value="VIP" style="padding-left:15px"></div>
             <div class="inp-group"><label class="inp-label">QUANTITY</label><input type="number" class="input-std" id="keyQty" value="1" style="padding-left:15px"></div>
+            <div class="inp-group"><label class="inp-label">THỜI HẠN (GIỜ)</label><input type="number" class="input-std" id="keyHours" value="48" min="1" style="padding-left:15px"></div>
             <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
                 <button class="btn-block" style="margin-top:0" onclick="generateKeys()">GENERATE</button>
                 <button class="btn-block" style="margin-top:0; background:transparent; border:1px solid var(--border); color:var(--muted)" onclick="closeModal('modalKey')">CANCEL</button>
@@ -333,6 +394,30 @@
             <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
                 <button class="btn-block" style="margin-top:0" onclick="saveKeyEdit()">SAVE</button>
                 <button class="btn-block" style="margin-top:0; background:transparent; border:1px solid var(--border); color:var(--muted)" onclick="closeModal('modalEdit')">CANCEL</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="modalVipKey" class="modal-overlay">
+        <div class="modal-content" style="border-color: rgba(255,215,0,0.3);">
+            <h3 style="margin-top:0; color:#ffd700;"><i class="fas fa-crown"></i> Tạo VIP Key</h3>
+            <div class="inp-group">
+                <label class="inp-label">TÊN KEY (VIP-<span style="color:#ffd700">CUSTOM</span>)</label>
+                <input type="text" class="input-std" id="vipKeyName" placeholder="Ví dụ: ADMIN, TESTER, BETA..." style="padding-left:15px; text-transform:uppercase;">
+                <div style="margin-top:6px; font-size:0.7rem; color:var(--muted);">
+                    Preview: <span id="vipKeyPreview" style="color:#ffd700; font-weight:800; font-family:'JetBrains Mono',monospace;">VIP-</span>
+                </div>
+            </div>
+            <div class="inp-group">
+                <label class="inp-label">THỜI HẠN (GIỜ)</label>
+                <input type="number" class="input-std" id="vipKeyHours" value="48" min="1" style="padding-left:15px">
+            </div>
+            <div style="background:rgba(255,215,0,0.06); border:1px solid rgba(255,215,0,0.2); border-radius:12px; padding:10px 14px; margin-bottom:16px; font-size:0.72rem; color:#ffd700;">
+                <i class="fas fa-infinity" style="margin-right:6px;"></i>VIP key <b>tái sử dụng được</b> — không bị xóa sau khi dùng
+            </div>
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+                <button class="btn-block" style="margin-top:0; background:#ffd700; color:#000;" onclick="generateVipKey()"><i class="fas fa-crown"></i> TẠO VIP KEY</button>
+                <button class="btn-block" style="margin-top:0; background:transparent; border:1px solid var(--border); color:var(--muted)" onclick="closeModal('modalVipKey')">HỦY</button>
             </div>
         </div>
     </div>
@@ -519,7 +604,10 @@
         function renderAll() {
             renderKeys();
             renderDevices();
+            const allKeys = Object.values(dbData.ValidKeys);
+            const vipCount = allKeys.filter(v => typeof v === 'object' && v.VIP === true).length;
             document.getElementById('statKeys').innerText = Object.keys(dbData.ValidKeys).length;
+            document.getElementById('statVip').innerText = vipCount;
             document.getElementById('statDevs').innerText = Object.keys(dbData.ActivatedUsers).length + Object.keys(dbData.BannedDevices).length;
             
             document.getElementById('confTitle').value = dbData.Config.Title || "";
@@ -543,23 +631,52 @@
             updateMaintBadge(isMaint);
         }
 
+        let keyFilter = 'all';
+        function setKeyFilter(f, el) {
+            keyFilter = f;
+            document.querySelectorAll('#tabKeys .chip').forEach(c => c.classList.remove('active'));
+            el.classList.add('active');
+            renderKeys();
+        }
+
         function renderKeys() {
             const list = document.getElementById('listKeys');
             const search = document.getElementById('searchKeys').value.toLowerCase();
             list.innerHTML = "";
             Object.keys(dbData.ValidKeys).reverse().forEach(key => {
                 if (search && !key.toLowerCase().includes(search)) return;
+                const val = dbData.ValidKeys[key];
+                const isVip = typeof val === 'object' && val.VIP === true;
+                if (keyFilter === 'vip' && !isVip) return;
+                if (keyFilter === 'normal' && isVip) return;
+
+                const hours = typeof val === 'object' ? (val.Hours || '-') : '-';
+                const cardClass = isVip ? 'item-card vip-card' : 'item-card active-card';
+                const vipTag = isVip
+                    ? `<span class="vip-badge"><i class="fas fa-crown"></i> VIP</span>`
+                    : `<span class="badge active"><i class="fas fa-key"></i> KEY</span>`;
+                const hoursPill = isVip
+                    ? `<span class="vip-hours-pill"><i class="fas fa-clock"></i> ${hours}h</span>`
+                    : (typeof val === 'object' && val.Hours
+                        ? `<div class="info-pill"><i class="fas fa-clock"></i> ${val.Hours}h</div>`
+                        : '');
+
                 list.innerHTML += `
-                <div class="item-card active-card">
+                <div class="${cardClass}">
                     <div class="row-top">
-                        <span class="mono-text" onclick="copy('${key}')">${key}</span>
-                        <div style="display:flex; gap:8px">
-                            <div class="icon-btn" style="width:32px; height:32px;" onclick="editKey('${key}')"><i class="fas fa-pen" style="font-size:0.8rem"></i></div>
+                        <div style="display:flex; flex-direction:column; gap:6px; padding-left:4px;">
+                            ${vipTag}
+                            <span class="mono-text" onclick="copy('${key}')" style="${isVip?'color:#ffd700;':''}">${key}</span>
+                            ${hoursPill ? `<div style="margin-top:2px;">${hoursPill}</div>` : ''}
+                        </div>
+                        <div style="display:flex; gap:8px; flex-shrink:0;">
+                            <div class="icon-btn" style="width:32px; height:32px; ${isVip?'border-color:rgba(255,215,0,0.4);color:#ffd700;':''}" onclick="editKey('${key}')"><i class="fas fa-pen" style="font-size:0.8rem"></i></div>
                             <div class="icon-btn" style="width:32px; height:32px; border-color:var(--red); color:var(--red);" onclick="delKey('${key}')"><i class="fas fa-trash" style="font-size:0.8rem;"></i></div>
                         </div>
                     </div>
                 </div>`;
             });
+            if(list.innerHTML === "") list.innerHTML = `<div style="text-align:center; padding:40px; color:var(--muted); font-size:0.8rem;">Không có key nào</div>`;
         }
 
         function renderDevices() {
@@ -635,14 +752,27 @@
         // 4. ACTIONS
         // ==========================================
         function generateKeys() {
-            const qty = document.getElementById('keyQty').value;
+            const qty = parseInt(document.getElementById('keyQty').value) || 1;
             const prefix = document.getElementById('keyPrefix').value.toUpperCase();
+            const hours = parseInt(document.getElementById('keyHours').value) || (dbData.Config.KeyDurationHours || 24);
             for(let i=0; i<qty; i++) {
                 const rnd = Math.random().toString(36).substring(2, 8).toUpperCase();
                 const k = prefix ? `${prefix}-${rnd}` : rnd;
-                dbData.ValidKeys[k] = new Date().toISOString();
+                dbData.ValidKeys[k] = { Hours: hours, CreatedAt: new Date().toISOString(), VIP: false };
             }
             closeModal('modalKey');
+            syncDB();
+        }
+
+        function generateVipKey() {
+            const name = document.getElementById('vipKeyName').value.trim().toUpperCase().replace(/[^A-Z0-9_-]/g,'');
+            if (!name) { showToast("Nhập tên VIP key!"); return; }
+            const hours = parseInt(document.getElementById('vipKeyHours').value) || 48;
+            const k = `VIP-${name}`;
+            if (dbData.ValidKeys[k]) { showToast("Key đã tồn tại!"); return; }
+            dbData.ValidKeys[k] = { Hours: hours, CreatedAt: new Date().toISOString(), VIP: true };
+            closeModal('modalVipKey');
+            document.getElementById('vipKeyName').value = '';
             syncDB();
         }
 
@@ -860,6 +990,13 @@
         }
 
         window.addEventListener('resize', () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; });
+
+        // VIP key name live preview
+        document.getElementById('vipKeyName').addEventListener('input', function() {
+            const v = this.value.toUpperCase().replace(/[^A-Z0-9_-]/g,'') || '';
+            document.getElementById('vipKeyPreview').innerText = 'VIP-' + v;
+        });
+
         appInit();
     </script>
 </body>
