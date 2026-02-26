@@ -157,6 +157,23 @@
         
         .dp-card { background: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.01) 100%); border: 1px solid var(--border); border-radius: 20px; padding: 25px; text-align: center; margin-top: 20px; position: relative; overflow: hidden; }
         .dp-card::after { content: ''; position: absolute; top:0; left:0; width:100%; height:4px; background: linear-gradient(90deg, transparent, var(--accent), transparent); }
+
+        /* --- MAINTENANCE --- */
+        .maint-card { border-color: rgba(255,165,0,0.35) !important; }
+        .maint-card h4 { color: #ffaa00 !important; }
+        .maint-badge {
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 8px 18px; border-radius: 12px; font-size: 0.75rem;
+            font-weight: 800; letter-spacing: 0.5px; border: 1px solid;
+            transition: 0.3s; margin-bottom: 18px;
+        }
+        .maint-quick-btn {
+            background: rgba(255,165,0,0.12); color: #ffaa00;
+            border: 1px solid rgba(255,165,0,0.4); border-radius: 12px;
+            padding: 10px 20px; font-weight: 700; cursor: pointer;
+            font-size: 0.85rem; transition: 0.2s; width: 100%; margin-top: 10px;
+        }
+        .maint-quick-btn:active { transform: scale(0.97); }
     </style>
 </head>
 <body>
@@ -250,7 +267,36 @@
                     <button class="btn-block" onclick="saveConfig()">SAVE CONFIGURATION</button>
                 </div>
 
-                <div class="dp-card" id="aboutPanel">
+                <!-- MAINTENANCE CARD -->
+                <div class="item-card maint-card">
+                    <h4 style="margin:0 0 8px 0; font-size:0.85rem; border-bottom:1px solid rgba(255,165,0,0.2); padding-bottom:10px;">
+                        <i class="fas fa-tools"></i> BẢO TRÌ HỆ THỐNG
+                    </h4>
+                    <div style="text-align:center;">
+                        <div id="maintStatusBadge" class="maint-badge">
+                            <i class="fas fa-check-circle"></i> BẢO TRÌ: TẮT
+                        </div>
+                    </div>
+                    <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:12px;">
+                        <div>
+                            <div style="font-size:0.8rem; font-weight:700; color:var(--text);">Chế độ bảo trì</div>
+                            <div style="font-size:0.7rem; color:var(--muted); margin-top:3px;">Khi bật, toàn bộ user sẽ bị chặn vào app</div>
+                        </div>
+                        <label class="switch" style="flex-shrink:0; margin-left:15px;">
+                            <input type="checkbox" id="confMaintToggle" onchange="updateMaintBadge(this.checked)">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="inp-group" style="margin-bottom:12px;">
+                        <label class="inp-label">NỘI DUNG THÔNG BÁO</label>
+                        <input type="text" class="input-std" id="confMaintMsg"
+                            placeholder="App đang bảo trì, vui lòng quay lại sau!"
+                            style="padding-left:15px">
+                    </div>
+                    <button class="maint-quick-btn" onclick="quickToggleMaintenance()">
+                        <i class="fas fa-bolt"></i> BẬT / TẮT NHANH (Lưu ngay)
+                    </button>
+                </div>
                     <i class="fas fa-code-branch" style="font-size:2rem; color:var(--accent); margin-bottom:15px;"></i>
                     <h4 style="margin:0; font-size:1.1rem; color:var(--text);" id="panelTitle">...</h4>
                     <div style="background:rgba(0,0,0,0.3); padding:10px; border-radius:12px; border:1px solid var(--border); display:inline-block; margin-top:15px; min-width: 200px;">
@@ -351,6 +397,8 @@
             "Config": { 
                 "Title": "PLongDev VIP", "Subtitle": "Server Key Admin v1.1", "AdminUrl": "", "UpdateUrl": "",
                 "AppVersion": 1, "KeyDurationHours": 24,
+                "Maintenance": false,
+                "MaintenanceMsg": "App đang bảo trì, vui lòng quay lại sau!",
                 "Api": { "BaseUrl": "", "Token": "" },
                 "Texts": { "BtnAdmin": "Hỗ Trợ", "BtnKey": "Get Key", "BtnLogin": "Xác Nhận", "Hint": "Nhập Key Vào Đây" }
             }, 
@@ -449,6 +497,8 @@
             if(!dbData.Config) dbData.Config = DEFAULT_DATA.Config;
             if(!dbData.Config.Api) dbData.Config.Api = { BaseUrl: "", Token: "" };
             if(!dbData.Config.Texts) dbData.Config.Texts = DEFAULT_DATA.Config.Texts;
+            if(dbData.Config.Maintenance === undefined) dbData.Config.Maintenance = false;
+            if(!dbData.Config.MaintenanceMsg) dbData.Config.MaintenanceMsg = DEFAULT_DATA.Config.MaintenanceMsg;
         }
 
         async function syncDB() {
@@ -486,6 +536,11 @@
 
             document.getElementById('confApiUrl').value = dbData.Config.Api.BaseUrl || "";
             document.getElementById('confApiToken').value = dbData.Config.Api.Token || "";
+
+            const isMaint = dbData.Config.Maintenance === true;
+            document.getElementById('confMaintToggle').checked = isMaint;
+            document.getElementById('confMaintMsg').value = dbData.Config.MaintenanceMsg || "";
+            updateMaintBadge(isMaint);
         }
 
         function renderKeys() {
@@ -626,6 +681,9 @@
 
             dbData.Config.Api.BaseUrl = document.getElementById('confApiUrl').value;
             dbData.Config.Api.Token = document.getElementById('confApiToken').value;
+
+            dbData.Config.Maintenance = document.getElementById('confMaintToggle').checked;
+            dbData.Config.MaintenanceMsg = document.getElementById('confMaintMsg').value || "App đang bảo trì, vui lòng quay lại sau!";
             
             syncDB();
         }
@@ -667,6 +725,31 @@
 
             syncDB();
             closeModal('modalEditDevice');
+        }
+
+        function updateMaintBadge(active) {
+            const badge = document.getElementById('maintStatusBadge');
+            if (!badge) return;
+            if (active) {
+                badge.innerHTML = '<i class="fas fa-tools"></i> BẢO TRÌ: BẬT';
+                badge.style.background = 'rgba(255,165,0,0.15)';
+                badge.style.color = '#ffaa00';
+                badge.style.borderColor = 'rgba(255,165,0,0.4)';
+            } else {
+                badge.innerHTML = '<i class="fas fa-check-circle"></i> BẢO TRÌ: TẮT';
+                badge.style.background = 'rgba(0,255,157,0.1)';
+                badge.style.color = 'var(--green)';
+                badge.style.borderColor = 'rgba(0,255,157,0.2)';
+            }
+        }
+
+        async function quickToggleMaintenance() {
+            if (!dbData) return;
+            dbData.Config.Maintenance = !dbData.Config.Maintenance;
+            document.getElementById('confMaintToggle').checked = dbData.Config.Maintenance;
+            updateMaintBadge(dbData.Config.Maintenance);
+            await syncDB();
+            showToast(dbData.Config.Maintenance ? "🔧 Bảo trì đã BẬT" : "✅ Bảo trì đã TẮT");
         }
 
         function delKey(key) { if(confirm("Delete key?")) { delete dbData.ValidKeys[key]; syncDB(); } }
