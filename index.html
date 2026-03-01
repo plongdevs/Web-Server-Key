@@ -179,8 +179,12 @@
             transition: 0.2s; text-align: center;
         }
         .choice-card:active { transform: scale(0.96); }
-        .choice-card.normal:hover { border-color: var(--accent); background: rgba(0,229,255,0.07); }
-        .choice-card.vip:hover    { border-color: #ffd700;       background: rgba(255,215,0,0.08); }
+        .choice-card.normal:hover  { border-color: var(--accent); background: rgba(0,229,255,0.07); }
+        .choice-card.vip:hover     { border-color: #ffd700;       background: rgba(255,215,0,0.08); }
+        .choice-card.global:hover  { border-color: #b366ff;       background: rgba(179,102,255,0.08); }
+        .global-card::before { content:''; position:absolute; top:0; left:0; width:4px; height:100%; background:#b366ff; box-shadow:2px 0 15px #b366ff; }
+        .global-badge { background:rgba(179,102,255,0.12); color:#b366ff; border:1px solid rgba(179,102,255,0.35); padding:3px 9px; border-radius:7px; font-size:0.6rem; font-weight:800; letter-spacing:0.5px; display:inline-flex; align-items:center; gap:5px; }
+        .global-hours-pill { background:rgba(179,102,255,0.08); color:#b366ff; border:1px solid rgba(179,102,255,0.2); padding:3px 10px; border-radius:8px; font-size:0.65rem; font-family:'JetBrains Mono',monospace; display:inline-flex; align-items:center; gap:5px; }
         .choice-card .choice-icon { font-size: 2rem; line-height: 1; }
         .choice-card .choice-title { font-size: 0.9rem; font-weight: 800; letter-spacing: 0.3px; }
         .choice-card .choice-desc  { font-size: 0.68rem; color: var(--muted); line-height: 1.4; }
@@ -199,6 +203,32 @@
             padding: 3px 10px; border-radius: 8px; font-size:0.65rem;
             font-family: 'JetBrains Mono', monospace; display:inline-flex; align-items:center; gap:5px;
         }
+
+        /* --- MULTI SELECT --- */
+        .key-checkbox { display:none; }
+        .select-mode .key-checkbox { display:flex; align-items:center; justify-content:center; width:22px; height:22px; border-radius:7px; border:1.5px solid var(--border); background:rgba(255,255,255,0.05); cursor:pointer; flex-shrink:0; transition:0.2s; }
+        .select-mode .key-checkbox.checked { background:var(--accent); border-color:var(--accent); color:#000; }
+        .bulk-bar { 
+            position:fixed; bottom:105px; left:50%; transform:translateX(-50%) translateY(100px);
+            background:var(--nav); border:1px solid var(--border); border-radius:20px;
+            padding:12px 20px; display:flex; align-items:center; gap:12px;
+            box-shadow:0 8px 30px rgba(0,0,0,0.6); backdrop-filter:var(--glass);
+            z-index:98; transition:0.3s cubic-bezier(0.175,0.885,0.32,1.275); pointer-events:none; opacity:0;
+        }
+        .bulk-bar.show { transform:translateX(-50%) translateY(0); pointer-events:auto; opacity:1; }
+        .bulk-bar-count { font-weight:800; font-size:0.85rem; color:var(--accent); }
+        .bulk-del-btn { background:var(--red); color:#fff; border:none; padding:8px 18px; border-radius:12px; font-weight:700; cursor:pointer; font-size:0.8rem; }
+        .bulk-cancel-btn { background:transparent; color:var(--muted); border:1px solid var(--border); padding:8px 14px; border-radius:12px; font-weight:700; cursor:pointer; font-size:0.8rem; }
+
+        /* --- KEY RESULT LIST (sau khi generate) --- */
+        .key-result-item { 
+            display:flex; align-items:center; justify-content:space-between;
+            background:rgba(0,0,0,0.3); border:1px solid var(--border); border-radius:10px;
+            padding:8px 12px; margin-bottom:6px; font-family:'JetBrains Mono',monospace;
+            font-size:0.75rem; color:var(--accent);
+        }
+        .key-result-item .copy-btn { background:transparent; border:none; color:var(--muted); cursor:pointer; padding:2px 6px; border-radius:6px; font-size:0.7rem; }
+        .key-result-item .copy-btn:active { background:var(--accent); color:#000; }
 
         /* --- MAINTENANCE --- */
         .maint-card { border-color: rgba(255,165,0,0.35) !important; }
@@ -264,12 +294,14 @@
             <div id="tabKeys">
                 <div class="controls" style="gap:8px;">
                     <div class="search"><i class="fas fa-search"></i><input type="text" class="input-std" id="searchKeys" placeholder="Search Keys..." onkeyup="renderKeys()"></div>
+                    <button class="btn-main" id="btnSelectMode" onclick="toggleSelectMode()"><i class="fas fa-check-square"></i></button>
                     <button class="btn-main" onclick="openModal('modalKeyChoice')"><i class="fas fa-plus"></i> NEW</button>
                 </div>
                 <div class="chips" style="margin-bottom:12px;">
                     <div class="chip active" onclick="setKeyFilter('all', this)">Tất cả</div>
                     <div class="chip" onclick="setKeyFilter('normal', this)">Key thường</div>
                     <div class="chip" onclick="setKeyFilter('vip', this)"><i class="fas fa-crown" style="font-size:0.7rem;color:#ffd700;margin-right:4px;"></i>Custom</div>
+                    <div class="chip" onclick="setKeyFilter('global', this)"><i class="fas fa-globe" style="font-size:0.7rem;color:#b366ff;margin-right:4px;"></i>Global</div>
                 </div>
                 <div id="listKeys"></div>
             </div>
@@ -344,8 +376,8 @@
                             placeholder="App đang bảo trì, vui lòng quay lại sau!"
                             style="padding-left:15px">
                     </div>
-                    <button class="maint-quick-btn" onclick="quickToggleMaintenance()">
-                        <i class="fas fa-bolt"></i> BẬT / TẮT NHANH (Lưu ngay)
+                    <button class="maint-quick-btn" onclick="saveMaintenance()">
+                        <i class="fas fa-save"></i> LƯU
                     </button>
                 </div>
                     <i class="fas fa-code-branch" style="font-size:2rem; color:var(--accent); margin-bottom:15px;"></i>
@@ -379,6 +411,11 @@
                     <div class="choice-icon">👑</div>
                     <div class="choice-title" style="color:#ffd700;">Key Custom</div>
                     <div class="choice-desc">Tên tự đặt<br>Tái sử dụng được</div>
+                </div>
+                <div class="choice-card global" onclick="closeModal('modalKeyChoice'); openModal('modalGlobalKey');" style="border-color:rgba(179,102,255,0.25);">
+                    <div class="choice-icon">🌐</div>
+                    <div class="choice-title" style="color:#b366ff;">Key Global</div>
+                    <div class="choice-desc">Nhiều thiết bị<br>dùng cùng 1 key</div>
                 </div>
             </div>
             <button class="btn-block" style="margin-top:16px; background:transparent; border:1px solid var(--border); color:var(--muted);" onclick="closeModal('modalKeyChoice')">HỦY</button>
@@ -445,7 +482,23 @@
         </div>
     </div>
 
-    <div id="modalEditDevice" class="modal-overlay">
+    <div id="modalGlobalKey" class="modal-overlay">
+        <div class="modal-content" style="border-color: rgba(179,102,255,0.3);">
+            <h3 style="margin-top:0; color:#b366ff;"><i class="fas fa-globe"></i> Tạo Global Key</h3>
+            <div style="background:rgba(179,102,255,0.06); border:1px solid rgba(179,102,255,0.2); border-radius:12px; padding:10px 14px; margin-bottom:16px; font-size:0.72rem; color:#b366ff;">
+                <i class="fas fa-info-circle" style="margin-right:6px;"></i>Global key <b>không bị xóa</b> khi có người dùng — nhiều thiết bị có thể dùng cùng 1 key
+            </div>
+            <div class="inp-group"><label class="inp-label">PREFIX</label><input type="text" class="input-std" id="globalKeyPrefix" value="GLOBAL" style="padding-left:15px;"></div>
+            <div class="inp-group"><label class="inp-label">SỐ LƯỢNG</label><input type="number" class="input-std" id="globalKeyQty" value="1" min="1" max="50" style="padding-left:15px;"></div>
+            <div class="inp-group"><label class="inp-label">THỜI HẠN (GIỜ)</label><input type="number" class="input-std" id="globalKeyHours" value="48" min="1" style="padding-left:15px;"></div>
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+                <button class="btn-block" style="margin-top:0; background:#b366ff; color:#fff;" onclick="generateGlobalKeys()"><i class="fas fa-globe"></i> TẠO GLOBAL KEY</button>
+                <button class="btn-block" style="margin-top:0; background:transparent; border:1px solid var(--border); color:var(--muted)" onclick="closeModal('modalGlobalKey')">HỦY</button>
+            </div>
+        </div>
+    </div>
+
+        <div id="modalEditDevice" class="modal-overlay">
         <div class="modal-content">
             <h3 style="margin-top:0;">Edit Device</h3>
             <input type="hidden" id="editDeviceOld">
@@ -478,6 +531,25 @@
     </div>
 
     <div id="toast" class="toast"><i class="fas fa-check-circle" style="color:var(--green)"></i><span>Action Successful</span></div>
+
+    <!-- BULK DELETE BAR -->
+    <div class="bulk-bar" id="bulkBar">
+        <span class="bulk-bar-count" id="bulkCount">0 đã chọn</span>
+        <button class="bulk-del-btn" onclick="bulkDeleteKeys()"><i class="fas fa-trash"></i> Xóa</button>
+        <button class="bulk-cancel-btn" onclick="toggleSelectMode()">Hủy</button>
+    </div>
+
+    <!-- MODAL: KẾT QUẢ GENERATE KEYS -->
+    <div id="modalKeyResult" class="modal-overlay">
+        <div class="modal-content" style="max-height:80vh; overflow-y:auto;">
+            <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:16px;">
+                <h3 style="margin:0; color:var(--accent);"><i class="fas fa-key"></i> Keys đã tạo</h3>
+                <button onclick="copyAllKeys()" style="background:var(--accent); color:#000; border:none; padding:6px 14px; border-radius:10px; font-weight:700; cursor:pointer; font-size:0.75rem;"><i class="fas fa-copy"></i> Copy tất cả</button>
+            </div>
+            <div id="keyResultList"></div>
+            <button class="btn-block" style="margin-top:12px; background:transparent; border:1px solid var(--border); color:var(--muted);" onclick="closeModal('modalKeyResult')">ĐÓNG</button>
+        </div>
+    </div>
 
     <div class="nav-fixed">
         <div class="nav-inner">
@@ -627,10 +699,11 @@
         function renderAll() {
             renderKeys();
             renderDevices();
-            const allKeys = Object.values(dbData.ValidKeys);
-            const vipCount = allKeys.filter(v => typeof v === 'object' && v.VIP === true).length;
+            const allKeys    = Object.values(dbData.ValidKeys);
+            const vipCount    = allKeys.filter(v => typeof v === 'object' && v.VIP === true).length;
+            const globalCount = allKeys.filter(v => typeof v === 'object' && v.Global === true).length;
             document.getElementById('statKeys').innerText = Object.keys(dbData.ValidKeys).length;
-            document.getElementById('statVip').innerText = vipCount;
+            document.getElementById('statVip').innerText  = vipCount + (globalCount ? '+'+globalCount+'🌐' : '');
             document.getElementById('statDevs').innerText = Object.keys(dbData.ActivatedUsers).length + Object.keys(dbData.BannedDevices).length;
             
             document.getElementById('confTitle').value = dbData.Config.Title || "";
@@ -669,31 +742,44 @@
             Object.keys(dbData.ValidKeys).reverse().forEach(key => {
                 if (search && !key.toLowerCase().includes(search)) return;
                 const val = dbData.ValidKeys[key];
-                const isVip = typeof val === 'object' && val.VIP === true;
-                if (keyFilter === 'vip' && !isVip) return;
-                if (keyFilter === 'normal' && isVip) return;
+                const isVip    = typeof val === 'object' && val.VIP === true;
+                const isGlobal = typeof val === 'object' && val.Global === true;
+                if (keyFilter === 'vip'    && !isVip)    return;
+                if (keyFilter === 'global' && !isGlobal) return;
+                if (keyFilter === 'normal' && (isVip || isGlobal)) return;
 
                 const hours = typeof val === 'object' ? (val.Hours || '-') : '-';
-                const cardClass = isVip ? 'item-card vip-card' : 'item-card active-card';
+                const cardClass = isVip    ? 'item-card vip-card'
+                                : isGlobal ? 'item-card global-card'
+                                           : 'item-card active-card';
                 const vipTag = isVip
                     ? `<span class="vip-badge"><i class="fas fa-crown"></i> Custom</span>`
-                    : `<span class="badge active"><i class="fas fa-key"></i> KEY</span>`;
+                    : isGlobal
+                        ? `<span class="global-badge"><i class="fas fa-globe"></i> Global</span>`
+                        : `<span class="badge active"><i class="fas fa-key"></i> KEY</span>`;
                 const hoursPill = isVip
                     ? `<span class="vip-hours-pill"><i class="fas fa-clock"></i> ${hours}h</span>`
-                    : (typeof val === 'object' && val.Hours
-                        ? `<div class="info-pill"><i class="fas fa-clock"></i> ${val.Hours}h</div>`
-                        : '');
+                    : isGlobal
+                        ? `<span class="global-hours-pill"><i class="fas fa-clock"></i> ${hours}h</span>`
+                        : (typeof val === 'object' && val.Hours
+                            ? `<div class="info-pill"><i class="fas fa-clock"></i> ${val.Hours}h</div>`
+                            : '');
 
                 list.innerHTML += `
-                <div class="${cardClass}">
+                <div class="${cardClass}" data-key="${key}" onclick="selectMode ? toggleKeySelect('${key}') : null" style="${selectMode?'cursor:pointer;':''}">
                     <div class="row-top">
-                        <div style="display:flex; flex-direction:column; gap:6px; padding-left:4px;">
-                            ${vipTag}
-                            <span class="mono-text" onclick="copy('${key}')" style="${isVip?'color:#ffd700;':''}">${key}</span>
-                            ${hoursPill ? `<div style="margin-top:2px;">${hoursPill}</div>` : ''}
+                        <div style="display:flex; align-items:center; gap:8px; flex:1; min-width:0;">
+                            <div class="key-checkbox ${selectMode && selectedKeys.has(key) ? 'checked' : ''}" onclick="event.stopPropagation(); toggleKeySelect('${key}')">
+                                ${selectMode && selectedKeys.has(key) ? '<i class="fas fa-check" style="font-size:0.6rem"></i>' : ''}
+                            </div>
+                            <div style="display:flex; flex-direction:column; gap:6px; padding-left:4px; flex:1; min-width:0;">
+                                ${vipTag}
+                                <span class="mono-text" onclick="event.stopPropagation(); copy('${key}')" style="${isVip?'color:#ffd700;': isGlobal?'color:#b366ff;':''}">${key}</span>
+                                ${hoursPill ? `<div style="margin-top:2px;">${hoursPill}</div>` : ''}
+                            </div>
                         </div>
-                        <div style="display:flex; gap:8px; flex-shrink:0;">
-                            <div class="icon-btn" style="width:32px; height:32px; ${isVip?'border-color:rgba(255,215,0,0.4);color:#ffd700;':''}" onclick="editKey('${key}')"><i class="fas fa-pen" style="font-size:0.8rem"></i></div>
+                        <div style="display:flex; gap:8px; flex-shrink:0;" onclick="event.stopPropagation()">
+                            ${!selectMode ? `<div class="icon-btn" style="width:32px; height:32px; ${isVip?'border-color:rgba(255,215,0,0.4);color:#ffd700;': isGlobal?'border-color:rgba(179,102,255,0.4);color:#b366ff;':''}" onclick="editKey('${key}')"><i class="fas fa-pen" style="font-size:0.8rem"></i></div>` : ''}
                             <div class="icon-btn" style="width:32px; height:32px; border-color:var(--red); color:var(--red);" onclick="delKey('${key}')"><i class="fas fa-trash" style="font-size:0.8rem;"></i></div>
                         </div>
                     </div>
@@ -774,17 +860,35 @@
         // ==========================================
         // 4. ACTIONS
         // ==========================================
+        let _lastGeneratedKeys = [];
+
         function generateKeys() {
-            const qty = parseInt(document.getElementById('keyQty').value) || 1;
+            const qty    = Math.min(parseInt(document.getElementById('keyQty').value) || 1, 100);
             const prefix = document.getElementById('keyPrefix').value.toUpperCase();
-            const hours = parseInt(document.getElementById('keyHours').value) || (dbData.Config.KeyDurationHours || 24);
-            for(let i=0; i<qty; i++) {
-                const rnd = Math.random().toString(36).substring(2, 8).toUpperCase();
-                const k = prefix ? `${prefix}-${rnd}` : rnd;
+            const hours  = parseInt(document.getElementById('keyHours').value) || (dbData.Config.KeyDurationHours || 24);
+            _lastGeneratedKeys = [];
+            for(let i = 0; i < qty; i++) {
+                const rnd = Math.random().toString(36).substring(2, 10).toUpperCase();
+                const k   = prefix ? `${prefix}-${rnd}` : rnd;
                 dbData.ValidKeys[k] = { Hours: hours, CreatedAt: new Date().toISOString(), VIP: false };
+                _lastGeneratedKeys.push(k);
             }
             closeModal('modalKey');
             syncDB();
+            // Hiện modal kết quả
+            const resultList = document.getElementById('keyResultList');
+            resultList.innerHTML = _lastGeneratedKeys.map(k =>
+                `<div class="key-result-item">
+                    <span>${k}</span>
+                    <button class="copy-btn" onclick="copy('${k}')"><i class="fas fa-copy"></i> Copy</button>
+                </div>`
+            ).join('');
+            openModal('modalKeyResult');
+        }
+
+        function copyAllKeys() {
+            navigator.clipboard.writeText(_lastGeneratedKeys.join('\n'))
+                .then(() => showToast('✅ Đã copy ' + _lastGeneratedKeys.length + ' key!'));
         }
 
         function generateVipKey() {
@@ -798,6 +902,30 @@
             document.getElementById('vipKeyName').value = '';
             document.getElementById('vipKeyPreview').innerText = '';
             syncDB();
+        }
+
+        function generateGlobalKeys() {
+            const prefix = document.getElementById('globalKeyPrefix').value.toUpperCase() || 'GLOBAL';
+            const qty    = Math.min(parseInt(document.getElementById('globalKeyQty').value) || 1, 50);
+            const hours  = parseInt(document.getElementById('globalKeyHours').value) || (dbData.Config.KeyDurationHours || 48);
+            _lastGeneratedKeys = [];
+            for(let i = 0; i < qty; i++) {
+                const rnd = Math.random().toString(36).substring(2, 10).toUpperCase();
+                const k   = `${prefix}-${rnd}`;
+                dbData.ValidKeys[k] = { Hours: hours, CreatedAt: new Date().toISOString(), VIP: false, Global: true };
+                _lastGeneratedKeys.push(k);
+            }
+            closeModal('modalGlobalKey');
+            syncDB();
+            // Hiện modal kết quả
+            const resultList = document.getElementById('keyResultList');
+            resultList.innerHTML = _lastGeneratedKeys.map(k =>
+                `<div class="key-result-item" style="border-color:rgba(179,102,255,0.3); color:#b366ff;">
+                    <span>🌐 ${k}</span>
+                    <button class="copy-btn" onclick="copy('${k}')"><i class="fas fa-copy"></i> Copy</button>
+                </div>`
+            ).join('');
+            openModal('modalKeyResult');
         }
 
         function toggleBan(dev) {
@@ -951,16 +1079,65 @@
             }
         }
 
-        async function quickToggleMaintenance() {
+        // quickToggleMaintenance removed — dùng saveMaintenance()
+
+        function delKey(key) {
+            if(selectMode) { toggleKeySelect(key); return; }
+            if(confirm("Xóa key này?")) { delete dbData.ValidKeys[key]; syncDB(); }
+        }
+
+        // ── MULTI SELECT ──────────────────────────────────────────────
+        let selectMode   = false;
+        let selectedKeys = new Set();
+
+        function toggleSelectMode() {
+            selectMode = !selectMode;
+            selectedKeys.clear();
+            const listKeys = document.getElementById('listKeys');
+            if (selectMode) {
+                listKeys.classList.add('select-mode');
+                document.getElementById('btnSelectMode').innerHTML = '<i class="fas fa-times"></i>';
+                document.getElementById('btnSelectMode').style.background = 'var(--red)';
+            } else {
+                listKeys.classList.remove('select-mode');
+                document.getElementById('btnSelectMode').innerHTML = '<i class="fas fa-check-square"></i>';
+                document.getElementById('btnSelectMode').style.background = '';
+                document.getElementById('bulkBar').classList.remove('show');
+            }
+            renderKeys();
+        }
+
+        function toggleKeySelect(key) {
+            if(selectedKeys.has(key)) selectedKeys.delete(key);
+            else selectedKeys.add(key);
+            // Cập nhật checkbox UI
+            const cb = document.querySelector(`[data-key="${key}"] .key-checkbox`);
+            if(cb) cb.classList.toggle('checked', selectedKeys.has(key));
+            // Cập nhật bulk bar
+            const count = selectedKeys.size;
+            document.getElementById('bulkCount').innerText = count + ' đã chọn';
+            document.getElementById('bulkBar').classList.toggle('show', count > 0);
+        }
+
+        function bulkDeleteKeys() {
+            if(selectedKeys.size === 0) return;
+            if(!confirm(`Xóa ${selectedKeys.size} key đã chọn?`)) return;
+            selectedKeys.forEach(k => delete dbData.ValidKeys[k]);
+            selectedKeys.clear();
+            toggleSelectMode();
+            syncDB();
+            showToast('🗑️ Đã xóa!');
+        }
+
+        // ── SAVE MAINTENANCE ──────────────────────────────────────────
+        async function saveMaintenance() {
             if (!dbData) return;
-            dbData.Config.Maintenance = !dbData.Config.Maintenance;
-            document.getElementById('confMaintToggle').checked = dbData.Config.Maintenance;
+            dbData.Config.Maintenance    = document.getElementById('confMaintToggle').checked;
+            dbData.Config.MaintenanceMsg = document.getElementById('confMaintMsg').value || "App đang bảo trì, vui lòng quay lại sau!";
             updateMaintBadge(dbData.Config.Maintenance);
             await syncDB();
             showToast(dbData.Config.Maintenance ? "🔧 Bảo trì đã BẬT" : "✅ Bảo trì đã TẮT");
         }
-
-        function delKey(key) { if(confirm("Delete key?")) { delete dbData.ValidKeys[key]; syncDB(); } }
 
         // ==========================================
         // 5. UI & ANIMATION
@@ -1035,7 +1212,7 @@
         function initParticles(theme) {
             particles = [];
             const color = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim();
-            for(let i=0; i<50; i++) particles.push({ x: Math.random()*canvas.width, y: Math.random()*canvas.height, v: Math.random()*0.4+0.1, s: Math.random()*2 });
+            for(let i=0; i<15; i++) particles.push({ x: Math.random()*canvas.width, y: Math.random()*canvas.height, v: Math.random()*0.4+0.1, s: Math.random()*2 });
             function loop() {
                 ctx.clearRect(0,0,canvas.width,canvas.height);
                 ctx.fillStyle = color; ctx.globalAlpha = 0.3;
@@ -1048,7 +1225,7 @@
             const fontSize = 14; const columns = canvas.width / fontSize; const drops = Array(Math.floor(columns)).fill(1);
             ctx.font = fontSize + "px monospace"; let frame = 0;
             function loop() {
-                if (frame % 3 === 0) {
+                if (frame % 6 === 0) {
                     ctx.fillStyle = "rgba(0, 0, 0, 0.1)"; ctx.fillRect(0, 0, canvas.width, canvas.height); ctx.fillStyle = "#0F0";
                     drops.forEach((y, i) => { const text = String.fromCharCode(0x30A0 + Math.random() * 96); ctx.fillText(text, i * fontSize, y * fontSize); if (y * fontSize > canvas.height && Math.random() > 0.98) drops[i] = 0; drops[i]++; });
                 }
@@ -1057,11 +1234,11 @@
             loop();
         }
         function initLuffyParticles() {
-            particles = []; for(let i=0; i<40; i++) particles.push({ x: Math.random()*canvas.width, y: Math.random()*canvas.height, v: Math.random()*0.8+0.2, s: Math.random()*4+1 });
+            particles = []; for(let i=0; i<12; i++) particles.push({ x: Math.random()*canvas.width, y: Math.random()*canvas.height, v: Math.random()*0.8+0.2, s: Math.random()*4+1 });
             function loop() { ctx.clearRect(0,0,canvas.width,canvas.height); ctx.fillStyle = "#ffffff"; ctx.globalAlpha = 0.2; particles.forEach(p => { p.y -= p.v; if(p.y < 0) p.y = canvas.height; ctx.beginPath(); ctx.arc(p.x, p.y, p.s, 0, Math.PI*2); ctx.fill(); }); animationId = requestAnimationFrame(loop); } loop();
         }
         function initDemonParticles() {
-            particles = []; for(let i=0; i<60; i++) particles.push({ x: Math.random()*canvas.width, y: Math.random()*canvas.height, vx: Math.random()*2-1, vy: Math.random()*2-1 });
+            particles = []; for(let i=0; i<15; i++) particles.push({ x: Math.random()*canvas.width, y: Math.random()*canvas.height, vx: Math.random()*2-1, vy: Math.random()*2-1 });
             function loop() { ctx.clearRect(0,0,canvas.width,canvas.height); ctx.fillStyle = "#00ffcc"; ctx.globalAlpha = 0.4; particles.forEach(p => { p.x += p.vx; p.y += p.vy; if(p.x<0||p.x>canvas.width) p.vx*=-1; if(p.y<0||p.y>canvas.height) p.vy*=-1; ctx.beginPath(); ctx.arc(p.x, p.y, 1.5, 0, Math.PI*2); ctx.fill(); }); animationId = requestAnimationFrame(loop); } loop();
         }
 
