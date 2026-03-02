@@ -78,6 +78,9 @@
         .input-std:focus { border-color: var(--accent); background: rgba(0,0,0,0.3); box-shadow: 0 0 20px rgba(0,0,0,0.2); }
         .input-std::placeholder { color: rgba(255,255,255,0.2); opacity: 1; }
         .input-std::-webkit-input-placeholder { color: rgba(255,255,255,0.2); -webkit-text-fill-color: rgba(255,255,255,0.2); opacity: 1; }
+        select.input-std { appearance: none; -webkit-appearance: none; padding-left: 15px !important; }
+        select.input-std option { background: #1a1a2e; color: var(--text); }
+
         .input-std:-webkit-autofill,
         .input-std:-webkit-autofill:focus {
             -webkit-text-fill-color: var(--text) !important;
@@ -185,6 +188,12 @@
         .choice-card .choice-icon  { font-size: 2rem; line-height: 1; }
         .choice-card .choice-title { font-size: 0.9rem; font-weight: 800; letter-spacing: 0.3px; }
         .choice-card .choice-desc  { font-size: 0.68rem; color: var(--muted); line-height: 1.4; }
+
+        /* ── KEY TYPE BADGE (on device cards) ─────────────── */
+        .type-badge { font-weight: 800; text-transform: uppercase; padding: 3px 10px; border-radius: 7px; font-size: 0.6rem; letter-spacing: 0.5px; display: inline-flex; align-items: center; gap: 5px; }
+        .type-badge.NORMAL { background: rgba(0,229,255,0.1);    color: var(--accent); border: 1px solid rgba(0,229,255,0.25); }
+        .type-badge.CUSTOM { background: rgba(255,215,0,0.12);   color: var(--custom); border: 1px solid rgba(255,215,0,0.3); }
+        .type-badge.GLOBAL { background: rgba(179,102,255,0.12); color: var(--global); border: 1px solid rgba(179,102,255,0.3); }
 
         /* ── MULTI SELECT ──────────────────────────────────── */
         .key-checkbox { display:none; }
@@ -454,8 +463,13 @@
                 <i class="fas fa-info-circle" style="margin-right:6px;"></i>Global key <b>không bị xóa</b> khi có người dùng — nhiều thiết bị có thể dùng cùng 1 key
             </div>
             <div class="inp-group"><label class="inp-label">PREFIX</label><input type="text" class="input-std" id="globalKeyPrefix" value="GLOBAL" style="padding-left:15px;"></div>
-            <div class="inp-group"><label class="inp-label">SỐ LƯỢNG</label><input type="number" class="input-std" id="globalKeyQty" value="1" min="1" max="50" style="padding-left:15px;"></div>
+            <div class="inp-group"><label class="inp-label">SỐ LƯỢNG KEY</label><input type="number" class="input-std" id="globalKeyQty" value="1" min="1" max="50" style="padding-left:15px;"></div>
             <div class="inp-group"><label class="inp-label">THỜI HẠN (GIỜ)</label><input type="number" class="input-std" id="globalKeyHours" value="48" min="1" style="padding-left:15px;"></div>
+            <div class="inp-group">
+                <label class="inp-label">GIỚI HẠN THIẾT BỊ</label>
+                <input type="number" class="input-std" id="globalKeyMaxDevices" value="5" min="1" max="100" style="padding-left:15px;">
+                <div style="margin-top:6px;font-size:0.7rem;color:var(--muted);">Số thiết bị tối đa được dùng cùng lúc</div>
+            </div>
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
                 <button class="btn-block" style="margin-top:0;background:var(--global);color:#fff;" onclick="generateGlobalKeys()"><i class="fas fa-globe"></i> TẠO</button>
                 <button class="btn-block" style="margin-top:0;background:transparent;border:1px solid var(--border);color:var(--muted);" onclick="closeModal('modalGlobalKey')">HỦY</button>
@@ -480,6 +494,10 @@
                 <label class="inp-label">THỜI HẠN (GIỜ)</label>
                 <input type="number" class="input-std" id="editHours" min="1" style="padding-left:15px">
             </div>
+            <div class="inp-group" id="editMaxDevicesRow" style="margin-bottom:20px;display:none;">
+                <label class="inp-label">GIỚI HẠN THIẾT BỊ</label>
+                <input type="number" class="input-std" id="editMaxDevices" min="1" max="100" style="padding-left:15px">
+            </div>
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
                 <button class="btn-block" style="margin-top:0;" id="editSaveBtn" onclick="saveKeyEdit()">SAVE</button>
                 <button class="btn-block" style="margin-top:0;background:transparent;border:1px solid var(--border);color:var(--muted);" onclick="closeModal('modalEdit')">CANCEL</button>
@@ -496,6 +514,14 @@
             <div class="inp-group"><label class="inp-label">DEVICE ID</label><input type="text" class="input-std" id="editDeviceNew" style="padding-left:15px"></div>
             <div class="inp-group"><label class="inp-label">LINKED KEY</label><input type="text" class="input-std" id="editDeviceKey" style="padding-left:15px"></div>
             <div class="inp-group"><label class="inp-label">EXPIRY DATE</label><input type="text" class="input-std" id="editDeviceExpiry" style="padding-left:15px"></div>
+            <div class="inp-group">
+                <label class="inp-label">KEY TYPE</label>
+                <select class="input-std" id="editDeviceKeyType" style="padding-left:15px; cursor:pointer;">
+                    <option value="NORMAL">🔑 NORMAL</option>
+                    <option value="CUSTOM">👑 CUSTOM</option>
+                    <option value="GLOBAL">🌐 GLOBAL</option>
+                </select>
+            </div>
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
                 <button class="btn-block" style="margin-top:0;" onclick="saveDeviceEdit()">UPDATE</button>
                 <button class="btn-block" style="margin-top:0;background:transparent;border:1px solid var(--border);color:var(--muted);" onclick="closeModal('modalEditDevice')">CANCEL</button>
@@ -532,6 +558,22 @@
         <span class="bulk-bar-count" id="bulkCount">0 đã chọn</span>
         <button class="bulk-del-btn" onclick="bulkDeleteKeys()"><i class="fas fa-trash"></i> Xóa</button>
         <button class="bulk-cancel-btn" onclick="toggleSelectMode()">Hủy</button>
+    </div>
+
+    <!-- MODAL: THIẾT BỊ ĐANG DÙNG GLOBAL KEY -->
+    <div id="modalGlobalDevices" class="modal-overlay">
+        <div class="modal-content" style="border-color:rgba(179,102,255,0.3);max-height:80vh;overflow-y:auto;">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+                <h3 style="margin:0;color:var(--global);"><i class="fas fa-users"></i> Thiết bị đang dùng</h3>
+                <span id="globalDevModalKeyName" class="global-badge"></span>
+            </div>
+            <div style="background:rgba(179,102,255,0.06);border:1px solid rgba(179,102,255,0.2);border-radius:10px;padding:10px 14px;margin-bottom:14px;font-size:0.75rem;color:var(--global);display:flex;justify-content:space-between;align-items:center;">
+                <span><i class="fas fa-globe" style="margin-right:6px;"></i>Đang sử dụng: <b id="globalDevCurrent">0</b></span>
+                <span>Giới hạn: <b id="globalDevMax">-</b></span>
+            </div>
+            <div id="globalDevList"></div>
+            <button class="btn-block" style="margin-top:12px;background:transparent;border:1px solid var(--border);color:var(--muted);" onclick="closeModal('modalGlobalDevices')">ĐÓNG</button>
+        </div>
     </div>
 
     <script>
@@ -731,10 +773,11 @@
                         ? `<span class="global-badge"><i class="fas fa-globe"></i> Global</span>`
                         : `<span class="normal-badge"><i class="fas fa-key"></i> Normal</span>`;
 
+                const maxDev = (type === 'global' && val && val.MaxDevices) ? val.MaxDevices : null;
                 const hoursPill = type === 'custom'
                     ? `<span class="custom-hours-pill"><i class="fas fa-clock"></i> ${hours}h</span>`
                     : type === 'global'
-                        ? `<span class="global-hours-pill"><i class="fas fa-clock"></i> ${hours}h</span>`
+                        ? `<span class="global-hours-pill"><i class="fas fa-clock"></i> ${hours}h</span>${maxDev ? `<span class="global-hours-pill"><i class="fas fa-users"></i> ${maxDev} thiết bị</span>` : ''}`
                         : `<span class="normal-hours-pill"><i class="fas fa-clock"></i> ${hours}h</span>`;
 
                 const keyColor = type === 'custom' ? 'color:var(--custom);'
@@ -764,6 +807,7 @@
                             </div>
                         </div>
                         <div style="display:flex;gap:8px;flex-shrink:0;" onclick="event.stopPropagation()">
+                            ${!selectMode && type === 'global' ? `<div class="icon-btn" style="width:32px;height:32px;border-color:rgba(179,102,255,0.4);color:var(--global);" onclick="showGlobalDevices('${key}')"><i class="fas fa-users" style="font-size:0.8rem"></i></div>` : ''}
                             ${!selectMode ? `<div class="icon-btn" style="width:32px;height:32px;${editBtnStyle}" onclick="editKey('${key}','${type}')"><i class="fas fa-pen" style="font-size:0.8rem"></i></div>` : ''}
                             <div class="icon-btn" style="width:32px;height:32px;border-color:var(--red);color:var(--red);" onclick="delKey('${uid}')"><i class="fas fa-trash" style="font-size:0.8rem;"></i></div>
                         </div>
@@ -791,9 +835,11 @@
             let devData = isBanned ? dbData.BannedDevices[dev] : dbData.ActivatedUsers[dev];
             let expiry = "N/A", keyUsed = "Unknown";
 
+            let devType = 'NORMAL';
             if (typeof devData === 'object') {
                 expiry  = devData.ExpiryReadable || "N/A";
                 keyUsed = devData.Key || "N/A";
+                devType = devData.Type || 'NORMAL';
             } else {
                 try { const d = new Date(devData); expiry = !isNaN(d) ? d.toLocaleDateString() : devData; }
                 catch(e) { expiry = devData; }
@@ -803,6 +849,8 @@
             const statusText  = isBanned ? 'BANNED' : 'AUTHORIZED';
             const badgeClass  = isBanned ? 'banned' : 'active';
             const icon        = isBanned ? 'fa-ban' : 'fa-mobile-alt';
+            const typeIcon    = devType === 'CUSTOM' ? 'fa-crown' : devType === 'GLOBAL' ? 'fa-globe' : 'fa-key';
+            const typeBadge   = `<span class="type-badge ${devType}"><i class="fas ${typeIcon}"></i> ${devType}</span>`;
 
             list.innerHTML += `
             <div class="item-card ${statusClass}">
@@ -824,7 +872,7 @@
                     <div class="info-pill"><i class="far fa-clock"></i> ${expiry}</div>
                 </div>
                 <div class="meta-row" style="margin-top:5px;">
-                    <span class="badge ${badgeClass}">${statusText}</span>
+                    <div style="display:flex;gap:6px;align-items:center;">${typeBadge}<span class="badge ${badgeClass}">${statusText}</span></div>
                     <div style="display:flex;gap:8px;">
                         <div class="icon-btn" style="width:28px;height:28px;border:none;background:transparent;" onclick="editDevice('${dev}',${isBanned})">
                             <i class="fas fa-pen" style="font-size:0.8rem"></i>
@@ -853,7 +901,7 @@
         for (let i = 0; i < qty; i++) {
             const rnd = Math.random().toString(36).substring(2, 10).toUpperCase();
             const k   = prefix ? `${prefix}-${rnd}` : rnd;
-            dbData.ValidKeys.NormalKey[k] = { Hours: hours, CreatedAt: new Date().toISOString() };
+            dbData.ValidKeys.NormalKey[k] = { Hours: hours, CreatedAt: new Date().toISOString(), VIP: false };
             _lastGeneratedKeys.push(k);
         }
         closeModal('modalKey');
@@ -866,7 +914,7 @@
         if (!name) { showToast("Nhập tên Custom key!"); return; }
         const hours = parseInt(document.getElementById('customKeyHours').value) || 48;
         if (dbData.ValidKeys.CustomKey[name]) { showToast("Key đã tồn tại!"); return; }
-        dbData.ValidKeys.CustomKey[name] = { Hours: hours, CreatedAt: new Date().toISOString() };
+        dbData.ValidKeys.CustomKey[name] = { Hours: hours, CreatedAt: new Date().toISOString(), VIP: true };
         closeModal('modalCustomKey');
         document.getElementById('customKeyName').value = '';
         document.getElementById('customKeyPreview').innerText = '';
@@ -881,7 +929,8 @@
         for (let i = 0; i < qty; i++) {
             const rnd = Math.random().toString(36).substring(2, 10).toUpperCase();
             const k   = `${prefix}-${rnd}`;
-            dbData.ValidKeys.GlobalKey[k] = { Hours: hours, CreatedAt: new Date().toISOString() };
+            const maxDevices = parseInt(document.getElementById('globalKeyMaxDevices').value) || 5;
+            dbData.ValidKeys.GlobalKey[k] = { Hours: hours, CreatedAt: new Date().toISOString(), VIP: false, MaxDevices: maxDevices };
             _lastGeneratedKeys.push(k);
         }
         closeModal('modalGlobalKey');
@@ -899,6 +948,42 @@
             </div>`
         ).join('');
         openModal('modalKeyResult');
+    }
+
+    function showGlobalDevices(key) {
+        const keyData = dbData.ValidKeys.GlobalKey[key];
+        const maxDevices = keyData && keyData.MaxDevices ? keyData.MaxDevices : '∞';
+
+        // Tìm tất cả thiết bị đang dùng key này còn hạn
+        const now = Date.now();
+        const activeDevices = [];
+        Object.entries(dbData.ActivatedUsers || {}).forEach(([devId, data]) => {
+            if (typeof data !== 'object') return;
+            if (data.Key !== key) return;
+            const expired = data.ExpiryMs && data.ExpiryMs < now;
+            activeDevices.push({ devId, data, expired });
+        });
+
+        document.getElementById('globalDevModalKeyName').innerText = key;
+        document.getElementById('globalDevCurrent').innerText = activeDevices.filter(d => !d.expired).length;
+        document.getElementById('globalDevMax').innerText = maxDevices;
+
+        const list = document.getElementById('globalDevList');
+        if (activeDevices.length === 0) {
+            list.innerHTML = `<div style="text-align:center;padding:30px;color:var(--muted);font-size:0.8rem;">Chưa có thiết bị nào dùng key này</div>`;
+        } else {
+            list.innerHTML = activeDevices.map(({ devId, data, expired }) => `
+                <div class="item-card ${expired ? 'banned-card' : 'active-card'}" style="margin-bottom:8px;padding:12px 14px;">
+                    <div style="display:flex;align-items:center;justify-content:space-between;padding-left:8px;">
+                        <div>
+                            <div class="mono-text" style="font-size:0.8rem;${expired ? 'color:var(--muted);' : ''}" onclick="copy('${devId}')">${devId.substring(0,16)}...</div>
+                            <div class="info-pill" style="margin-top:4px;"><i class="far fa-clock"></i> ${data.ExpiryReadable || 'N/A'}</div>
+                        </div>
+                        <span class="badge ${expired ? 'banned' : 'active'}">${expired ? 'HẾT HẠN' : 'ACTIVE'}</span>
+                    </div>
+                </div>`).join('');
+        }
+        openModal('modalGlobalDevices');
     }
 
     function copyAllKeys() {
@@ -926,6 +1011,12 @@
         document.getElementById('editNew').value     = key;
         document.getElementById('editHours').value   = hours;
         document.getElementById('editKeyType').value = type;
+        // Hiện/ẩn field MaxDevices tuỳ loại key
+        const maxDevRow = document.getElementById('editMaxDevicesRow');
+        if (maxDevRow) {
+            maxDevRow.style.display = type === 'global' ? '' : 'none';
+            document.getElementById('editMaxDevices').value = (val && val.MaxDevices) ? val.MaxDevices : 5;
+        }
 
         const content = document.getElementById('modalEditContent');
         const badge   = document.getElementById('editKeyTypeBadge');
@@ -965,6 +1056,10 @@
         let existing = dbData.ValidKeys[bucket][oldK];
         if (typeof existing !== 'object' || existing === null) existing = { CreatedAt: new Date().toISOString() };
         if (hours > 0) existing.Hours = hours;
+        if (type === 'global') {
+            const maxDev = parseInt(document.getElementById('editMaxDevices').value) || 5;
+            existing.MaxDevices = maxDev;
+        }
 
         if (newK !== oldK) {
             dbData.ValidKeys[bucket][newK] = existing;
@@ -1056,9 +1151,11 @@
         if (typeof data === 'object') {
             document.getElementById('editDeviceKey').value    = data.Key || "";
             document.getElementById('editDeviceExpiry').value = data.ExpiryReadable || "";
+            document.getElementById('editDeviceKeyType').value = data.Type || 'NORMAL';
         } else {
             document.getElementById('editDeviceKey').value    = "";
             document.getElementById('editDeviceExpiry').value = data;
+            document.getElementById('editDeviceKeyType').value = 'NORMAL';
         }
         openModal('modalEditDevice');
     }
@@ -1066,15 +1163,17 @@
     function saveDeviceEdit() {
         const oldDev    = document.getElementById('editDeviceOld').value;
         const newDev    = document.getElementById('editDeviceNew').value.trim();
-        const newKey    = document.getElementById('editDeviceKey').value.trim();
-        const newExpiry = document.getElementById('editDeviceExpiry').value.trim();
-        const type      = document.getElementById('editDeviceType').value;
+        const newKey     = document.getElementById('editDeviceKey').value.trim();
+        const newExpiry  = document.getElementById('editDeviceExpiry').value.trim();
+        const newKeyType = document.getElementById('editDeviceKeyType').value;
+        const type       = document.getElementById('editDeviceType').value;
 
         let targetObj   = type === 'banned' ? dbData.BannedDevices : dbData.ActivatedUsers;
         let currentData = targetObj[oldDev];
         if (typeof currentData !== 'object') currentData = { ExpiryReadable: currentData, Key: "Unknown", ExpiryMs: 0 };
-        currentData.Key = newKey;
+        currentData.Key    = newKey;
         currentData.ExpiryReadable = newExpiry;
+        currentData.Type   = newKeyType;
 
         if (newDev !== oldDev) {
             targetObj[newDev] = currentData;
