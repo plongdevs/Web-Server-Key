@@ -3,71 +3,74 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Server Key Admin V1.1</title>
+    <title>Server Key Admin V1.2</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@500;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
-        /* --- CSS VARIABLES --- */
+        /* ── CSS VARIABLES ─────────────────────────────────── */
         :root {
-            --bg: #050508; --card: rgba(20, 20, 25, 0.6); --nav: rgba(25, 25, 35, 0.8); 
-            --accent: #00e5ff; --text: #ffffff; --muted: #94a3b8; 
-            --border: rgba(255, 255, 255, 0.08); 
-            --green: #00ff9d; --red: #ff0055;
+            --bg: #050508;
+            --card: rgba(20, 20, 25, 0.6);
+            --nav: rgba(25, 25, 35, 0.8);
+            --accent: #00e5ff;
+            --text: #ffffff;
+            --muted: #94a3b8;
+            --border: rgba(255, 255, 255, 0.08);
+            --green: #00ff9d;
+            --red: #ff0055;
+            --custom: #ffd700;   /* Custom/VIP key color */
+            --global: #b366ff;   /* Global key color */
             --glass: blur(24px) saturate(180%);
             --shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
         }
 
-        /* --- THEMES --- */
+        /* ── THEMES ────────────────────────────────────────── */
         [data-theme="cyberpunk"] { --bg:#050508; --accent:#00e5ff; }
-        [data-theme="matrix"] { --bg:#000000; --card:rgba(0, 20, 0, 0.8); --nav:rgba(0, 30, 0, 0.9); --accent:#00ff00; --green:#00ff00; --red:#008800; }
-        [data-theme="blood"] { --bg:#0f0202; --card:rgba(30, 5, 5, 0.6); --nav:rgba(40, 5, 5, 0.8); --accent:#ff0033; --green:#ff3333; --red:#ff0033; }
-        [data-theme="gold"] { --bg:#0a0800; --card:rgba(30, 25, 10, 0.6); --nav:rgba(40, 35, 10, 0.8); --accent:#ffd700; --green:#ffeb3b; --red:#ff4500; color:#fff; }
-        [data-theme="ice"] { --bg:#00080a; --card:rgba(10, 30, 40, 0.6); --nav:rgba(10, 40, 50, 0.8); --accent:#00ffff; --green:#a0ffff; --red:#ff0055; }
-        [data-theme="nature"] { --bg:#051005; --card:rgba(10, 30, 10, 0.6); --nav:rgba(15, 40, 15, 0.8); --accent:#00ff44; --green:#55ff55; --red:#ff5555; }
-        
-        /* Anime Themes */
-        [data-theme="itachi"] { --bg:#050000; --card:rgba(20, 0, 0, 0.7); --nav:rgba(30, 0, 0, 0.9); --accent:#ff0000; }
-        [data-theme="gojo"] { --bg:#0a0014; --card:rgba(20, 0, 40, 0.6); --nav:rgba(30, 10, 50, 0.8); --accent:#c400ff; --green:#d633ff; --red:#ff0066; }
-        [data-theme="luffy"] { --bg:#1a1a1a; --card:rgba(40, 40, 40, 0.6); --nav:rgba(50, 50, 50, 0.8); --accent:#ffffff; --green:#dddddd; --red:#ff3333; }
-        [data-theme="demon"] { --bg:#00080a; --card:rgba(0, 20, 30, 0.6); --nav:rgba(0, 30, 40, 0.8); --accent:#00ffcc; }
+        [data-theme="matrix"]    { --bg:#000000; --card:rgba(0,20,0,0.8); --nav:rgba(0,30,0,0.9); --accent:#00ff00; --green:#00ff00; --red:#008800; }
+        [data-theme="blood"]     { --bg:#0f0202; --card:rgba(30,5,5,0.6); --nav:rgba(40,5,5,0.8); --accent:#ff0033; --green:#ff3333; --red:#ff0033; }
+        [data-theme="gold"]      { --bg:#0a0800; --card:rgba(30,25,10,0.6); --nav:rgba(40,35,10,0.8); --accent:#ffd700; --green:#ffeb3b; --red:#ff4500; --custom:#fff176; }
+        [data-theme="ice"]       { --bg:#00080a; --card:rgba(10,30,40,0.6); --nav:rgba(10,40,50,0.8); --accent:#00ffff; --green:#a0ffff; --red:#ff0055; }
+        [data-theme="nature"]    { --bg:#051005; --card:rgba(10,30,10,0.6); --nav:rgba(15,40,15,0.8); --accent:#00ff44; --green:#55ff55; --red:#ff5555; }
+        [data-theme="itachi"]    { --bg:#050000; --card:rgba(20,0,0,0.7); --nav:rgba(30,0,0,0.9); --accent:#ff0000; }
+        [data-theme="gojo"]      { --bg:#0a0014; --card:rgba(20,0,40,0.6); --nav:rgba(30,10,50,0.8); --accent:#c400ff; --green:#d633ff; --red:#ff0066; --global:#c400ff; }
+        [data-theme="luffy"]     { --bg:#1a1a1a; --card:rgba(40,40,40,0.6); --nav:rgba(50,50,50,0.8); --accent:#ffffff; --green:#dddddd; --red:#ff3333; }
+        [data-theme="demon"]     { --bg:#00080a; --card:rgba(0,20,30,0.6); --nav:rgba(0,30,40,0.8); --accent:#00ffcc; }
 
-        /* --- GLOBAL RESETS --- */
+        /* ── GLOBAL RESETS ─────────────────────────────────── */
         * { box-sizing: border-box; outline: none; -webkit-tap-highlight-color: transparent; user-select: none; }
-        body { margin: 0; padding: 0; font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; padding-bottom: 110px; overflow-x: hidden; transition: background 0.4s ease; }
-        
+        body { margin: 0; font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; padding-bottom: 110px; overflow-x: hidden; transition: background 0.4s ease; }
         #bgCanvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -2; pointer-events: none; }
-        #themeOverlay { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 100vw; height: 100vh; z-index: -1; pointer-events: none; display: flex; align-items: center; justify-content: center; opacity: 0.3; overflow: hidden; }
 
-        /* --- HEADER --- */
-        header { 
-            position: sticky; top: 0; z-index: 50; 
+        /* ── HEADER ────────────────────────────────────────── */
+        header {
+            position: sticky; top: 0; z-index: 50;
             background: rgba(0,0,0,0.2); backdrop-filter: var(--glass);
             border-bottom: 1px solid var(--border); padding: 15px 20px;
             display: flex; justify-content: space-between; align-items: center;
         }
         .brand { font-weight: 800; font-size: 1.1rem; display: flex; align-items: center; gap: 10px; letter-spacing: -0.5px; }
-        .brand i { color: var(--accent); filter: drop-shadow(0 0 8px var(--accent)); transition: 0.3s; }
-        .icon-btn { 
-            width: 38px; height: 38px; border-radius: 12px; 
+        .brand i { color: var(--accent); filter: drop-shadow(0 0 8px var(--accent)); }
+        .icon-btn {
+            width: 38px; height: 38px; border-radius: 12px;
             background: rgba(255,255,255,0.05); border: 1px solid var(--border); color: var(--muted);
             display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.2s;
         }
         .icon-btn:active { transform: scale(0.95); background: var(--accent); color: #000; }
 
-        /* --- LAYOUT --- */
+        /* ── LAYOUT ────────────────────────────────────────── */
         .container { max-width: 600px; margin: 0 auto; padding: 20px; }
         .hidden { display: none !important; }
         .fade-in { animation: fadeIn 0.4s ease forwards; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* --- CONTROLS --- */
+        /* ── CONTROLS ──────────────────────────────────────── */
         .controls { display: flex; gap: 10px; margin-bottom: 15px; }
         .search { position: relative; flex: 1; }
         .search i { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--muted); font-size: 0.8rem; }
-        .input-std { 
-            width: 100%; background: rgba(0,0,0,0.2); border: 1px solid var(--border); 
-            padding: 12px 12px 12px 40px; color: var(--text); border-radius: 12px; 
+        .input-std {
+            width: 100%; background: rgba(0,0,0,0.2); border: 1px solid var(--border);
+            padding: 12px 12px 12px 40px; color: var(--text); border-radius: 12px;
             font-family: 'Inter', sans-serif; font-size: 0.9rem; backdrop-filter: blur(5px);
             transition: border-color 0.3s, background 0.3s, box-shadow 0.3s;
             -webkit-text-fill-color: var(--text);
@@ -75,78 +78,86 @@
         .input-std:focus { border-color: var(--accent); background: rgba(0,0,0,0.3); box-shadow: 0 0 20px rgba(0,0,0,0.2); }
         .input-std::placeholder { color: rgba(255,255,255,0.2); opacity: 1; }
         .input-std::-webkit-input-placeholder { color: rgba(255,255,255,0.2); -webkit-text-fill-color: rgba(255,255,255,0.2); opacity: 1; }
-        .input-std::-moz-placeholder { color: rgba(255,255,255,0.2); opacity: 1; }
-        /* Chặn browser override màu chữ khi autofill */
         .input-std:-webkit-autofill,
         .input-std:-webkit-autofill:focus {
             -webkit-text-fill-color: var(--text) !important;
             -webkit-box-shadow: 0 0 0px 1000px rgba(0,0,0,0.3) inset !important;
-            transition: background-color 0s;
         }
-        .btn-main { 
-            background: var(--accent); color: #000; border: none; padding: 0 20px; 
-            border-radius: 12px; font-weight: 700; cursor: pointer; 
-            display: flex; align-items: center; gap: 8px; white-space: nowrap; box-shadow: var(--shadow); transition: 0.2s;
+        .btn-main {
+            background: var(--accent); color: #000; border: none; padding: 0 20px;
+            border-radius: 12px; font-weight: 700; cursor: pointer;
+            display: flex; align-items: center; gap: 8px; white-space: nowrap;
+            box-shadow: var(--shadow); transition: 0.2s;
         }
-        
-        /* --- CHIPS --- */
+
+        /* ── CHIPS ─────────────────────────────────────────── */
         .chips { display: flex; gap: 8px; margin-bottom: 15px; overflow-x: auto; padding-bottom: 5px; scrollbar-width: none; }
         .chip { padding: 8px 18px; border-radius: 20px; background: rgba(255,255,255,0.05); border: 1px solid var(--border); font-size: 0.75rem; font-weight: 600; color: var(--muted); cursor: pointer; transition: 0.2s; white-space: nowrap; }
         .chip.active { background: var(--accent); color: #000; border-color: var(--accent); box-shadow: 0 0 15px var(--accent); }
 
-        /* --- CARDS --- */
-        .item-card { 
-            background: var(--card); border: 1px solid var(--border); 
-            border-radius: 24px; padding: 20px; margin-bottom: 12px; 
+        /* ── CARDS ─────────────────────────────────────────── */
+        .item-card {
+            background: var(--card); border: 1px solid var(--border);
+            border-radius: 24px; padding: 20px; margin-bottom: 12px;
             display: flex; flex-direction: column; gap: 12px;
-            backdrop-filter: var(--glass); 
+            backdrop-filter: var(--glass);
             box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
             position: relative; overflow: hidden;
         }
-        .item-card.active-card::before { content:''; position: absolute; top:0; left:0; width:4px; height:100%; background: var(--green); box-shadow: 2px 0 15px var(--green); }
-        .item-card.banned-card::before { content:''; position: absolute; top:0; left:0; width:4px; height:100%; background: var(--red); box-shadow: 2px 0 15px var(--red); }
-        
+        .item-card.normal-card::before  { content:''; position:absolute; top:0; left:0; width:4px; height:100%; background:var(--accent); box-shadow:2px 0 15px var(--accent); }
+        .item-card.custom-card::before  { content:''; position:absolute; top:0; left:0; width:4px; height:100%; background:var(--custom); box-shadow:2px 0 15px var(--custom); }
+        .item-card.global-card::before  { content:''; position:absolute; top:0; left:0; width:4px; height:100%; background:var(--global); box-shadow:2px 0 15px var(--global); }
+        .item-card.active-card::before  { content:''; position:absolute; top:0; left:0; width:4px; height:100%; background:var(--green); box-shadow:2px 0 15px var(--green); }
+        .item-card.banned-card::before  { content:''; position:absolute; top:0; left:0; width:4px; height:100%; background:var(--red); box-shadow:2px 0 15px var(--red); }
+
         .row-top { display: flex; justify-content: space-between; align-items: center; padding-left: 8px; }
         .mono-text { font-family: 'JetBrains Mono', monospace; font-weight: 700; color: var(--text); font-size: 0.95rem; word-break: break-all; opacity: 0.95; }
         .meta-row { border-top: 1px solid var(--border); padding: 12px 0 0 8px; display: flex; justify-content: space-between; font-size: 0.7rem; color: var(--muted); align-items: center; }
+
+        /* ── BADGES ────────────────────────────────────────── */
         .badge { font-weight: 800; text-transform: uppercase; padding: 4px 10px; border-radius: 8px; font-size: 0.6rem; letter-spacing: 0.5px; display: inline-flex; align-items: center; gap: 5px; }
-        .badge.active { background: rgba(0, 255, 157, 0.1); color: var(--green); border: 1px solid rgba(0, 255, 157, 0.2); }
-        .badge.banned { background: rgba(255, 0, 85, 0.1); color: var(--red); border: 1px solid rgba(255, 0, 85, 0.2); }
-        
+        .badge.active { background: rgba(0,255,157,0.1); color: var(--green); border: 1px solid rgba(0,255,157,0.2); }
+        .badge.banned { background: rgba(255,0,85,0.1); color: var(--red); border: 1px solid rgba(255,0,85,0.2); }
+
+        .normal-badge { background: rgba(0,229,255,0.1); color: var(--accent); border: 1px solid rgba(0,229,255,0.25); padding: 3px 9px; border-radius: 7px; font-size: 0.6rem; font-weight: 800; letter-spacing: 0.5px; display: inline-flex; align-items: center; gap: 5px; }
+        .custom-badge { background: rgba(255,215,0,0.12); color: var(--custom); border: 1px solid rgba(255,215,0,0.3); padding: 3px 9px; border-radius: 7px; font-size: 0.6rem; font-weight: 800; letter-spacing: 0.5px; display: inline-flex; align-items: center; gap: 5px; }
+        .global-badge { background: rgba(179,102,255,0.12); color: var(--global); border: 1px solid rgba(179,102,255,0.3); padding: 3px 9px; border-radius: 7px; font-size: 0.6rem; font-weight: 800; letter-spacing: 0.5px; display: inline-flex; align-items: center; gap: 5px; }
+
+        .normal-hours-pill { background: rgba(0,229,255,0.06); color: var(--accent); border: 1px solid rgba(0,229,255,0.15); padding: 3px 10px; border-radius: 8px; font-size: 0.65rem; font-family: 'JetBrains Mono', monospace; display: inline-flex; align-items: center; gap: 5px; }
+        .custom-hours-pill { background: rgba(255,215,0,0.08); color: var(--custom); border: 1px solid rgba(255,215,0,0.2); padding: 3px 10px; border-radius: 8px; font-size: 0.65rem; font-family: 'JetBrains Mono', monospace; display: inline-flex; align-items: center; gap: 5px; }
+        .global-hours-pill { background: rgba(179,102,255,0.08); color: var(--global); border: 1px solid rgba(179,102,255,0.2); padding: 3px 10px; border-radius: 8px; font-size: 0.65rem; font-family: 'JetBrains Mono', monospace; display: inline-flex; align-items: center; gap: 5px; }
+
+        .info-pill { background: rgba(0,0,0,0.3); padding: 4px 10px; border-radius: 8px; border: 1px solid var(--border); display: inline-flex; align-items: center; gap: 6px; font-family: 'JetBrains Mono', monospace; color: var(--muted); font-size: 0.7rem; margin-top: 5px; }
+
+        /* ── DEVICE ICON ───────────────────────────────────── */
         .device-info { display: flex; align-items: center; gap: 15px; }
         .device-icon { width: 42px; height: 42px; border-radius: 14px; background: rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: center; font-size: 1.2rem; color: var(--muted); border: 1px solid var(--border); }
         .active-card .device-icon { color: var(--green); border-color: rgba(0,255,157,0.3); box-shadow: 0 0 15px rgba(0,255,157,0.1); }
-        .banned-card .device-icon { color: var(--red); border-color: rgba(255,0,85,0.3); box-shadow: 0 0 15px rgba(255,0,85,0.1); }
-        
-        .info-pill { 
-            background: rgba(0,0,0,0.3); padding: 4px 10px; border-radius: 8px; border: 1px solid var(--border); 
-            display: inline-flex; align-items: center; gap: 6px; font-family: 'JetBrains Mono', monospace; color: var(--muted);
-            font-size: 0.7rem; margin-top: 5px;
-        }
+        .banned-card  .device-icon { color: var(--red); border-color: rgba(255,0,85,0.3); box-shadow: 0 0 15px rgba(255,0,85,0.1); }
 
-        /* --- SWITCH --- */
+        /* ── SWITCH ────────────────────────────────────────── */
         .switch { position: relative; width: 50px; height: 28px; }
         .switch input { opacity: 0; width: 0; height: 0; }
         .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background: #222; border-radius: 30px; transition: .3s; border: 1px solid var(--border); }
         .slider:before { position: absolute; content: ""; height: 20px; width: 20px; left: 3px; bottom: 3px; background: #666; border-radius: 50%; transition: .3s; box-shadow: 0 2px 5px rgba(0,0,0,0.5); }
-        input:checked + .slider { background: rgba(255, 0, 85, 0.2); border-color: var(--red); }
-        input:checked + .slider:before { transform: translateX(22px); background: var(--red); box-shadow: 0 0 10px var(--red); }
-        input:not(:checked) + .slider { background: rgba(0, 255, 157, 0.2); border-color: var(--green); }
+        input:checked     + .slider { background: rgba(255,0,85,0.2); border-color: var(--red); }
+        input:checked     + .slider:before { transform: translateX(22px); background: var(--red); box-shadow: 0 0 10px var(--red); }
+        input:not(:checked) + .slider { background: rgba(0,255,157,0.2); border-color: var(--green); }
         input:not(:checked) + .slider:before { background: var(--green); box-shadow: 0 0 10px var(--green); }
 
-        /* --- NAV BAR --- */
+        /* ── NAV BAR ───────────────────────────────────────── */
         .nav-fixed { position: fixed; bottom: 25px; left: 0; right: 0; display: flex; justify-content: center; z-index: 99; pointer-events: none; }
-        .nav-inner { 
-            background: var(--nav); border: 1px solid var(--border); padding: 0 10px; height: 70px; border-radius: 24px; width: 90%; max-width: 400px; 
-            display: flex; justify-content: space-around; align-items: center; 
-            box-shadow: 0 20px 40px rgba(0,0,0,0.6); backdrop-filter: var(--glass); pointer-events: auto; 
+        .nav-inner {
+            background: var(--nav); border: 1px solid var(--border); padding: 0 10px; height: 70px; border-radius: 24px; width: 90%; max-width: 400px;
+            display: flex; justify-content: space-around; align-items: center;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.6); backdrop-filter: var(--glass); pointer-events: auto;
         }
         .nav-btn { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--muted); font-size: 1.2rem; transition: 0.3s; cursor: pointer; height: 100%; border-radius: 12px; }
         .nav-btn:hover { color: #fff; transform: translateY(-2px); }
         .nav-btn.active { color: var(--accent); transform: translateY(-3px); text-shadow: 0 0 15px var(--accent); }
         .nav-lbl { font-size: 0.65rem; margin-top: 4px; font-weight: 700; letter-spacing: 0.5px; opacity: 0.9; }
 
-        /* --- SETUP / TOAST / MODALS --- */
+        /* ── SETUP / TOAST / MODALS ────────────────────────── */
         .setup-box { text-align: center; padding: 40px 25px; border: 1px solid var(--border); border-radius: 24px; background: var(--card); margin-top: 40px; backdrop-filter: blur(20px); box-shadow: var(--shadow); animation: fadeIn 0.5s ease; }
         .btn-block { width: 100%; padding: 15px; background: var(--accent); color: #000; border: none; border-radius: 16px; font-weight: 800; margin-top: 15px; cursor: pointer; letter-spacing: 0.5px; font-size: 0.9rem; transition: 0.2s; box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
         .btn-block:active { transform: scale(0.98); }
@@ -159,56 +170,27 @@
         .toast { position: fixed; top: 20px; left: 50%; transform: translateX(-50%) translateY(-100px); background: var(--nav); border: 1px solid var(--accent); color: var(--text); padding: 12px 25px; border-radius: 50px; z-index: 300; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); display: flex; align-items: center; gap: 10px; font-weight: 600; box-shadow: 0 10px 30px rgba(0,0,0,0.5); font-size: 0.85rem; white-space: nowrap; }
         .toast.show { transform: translateX(-50%) translateY(0); }
 
-        /* --- THEME GRID --- */
+        /* ── THEME GRID ────────────────────────────────────── */
         .theme-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; max-height: 300px; overflow-y: auto; }
-        .theme-btn { 
-            background: rgba(255,255,255,0.05); border: 1px solid var(--border); padding: 15px; 
-            border-radius: 12px; text-align: center; color: var(--muted); font-weight: 700; cursor: pointer; transition: 0.2s;
-        }
+        .theme-btn { background: rgba(255,255,255,0.05); border: 1px solid var(--border); padding: 15px; border-radius: 12px; text-align: center; color: var(--muted); font-weight: 700; cursor: pointer; transition: 0.2s; }
         .theme-btn:hover { background: var(--accent); color: #000; }
-        
-        .dp-card { background: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.01) 100%); border: 1px solid var(--border); border-radius: 20px; padding: 25px; text-align: center; margin-top: 20px; position: relative; overflow: hidden; }
-        .dp-card::after { content: ''; position: absolute; top:0; left:0; width:100%; height:4px; background: linear-gradient(90deg, transparent, var(--accent), transparent); }
 
-        /* --- KEY CHOICE MODAL --- */
+        /* ── KEY CHOICE MODAL ──────────────────────────────── */
         .choice-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 8px; }
-        .choice-card {
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            gap: 12px; padding: 28px 16px; border-radius: 18px; cursor: pointer;
-            border: 1.5px solid var(--border); background: rgba(255,255,255,0.03);
-            transition: 0.2s; text-align: center;
-        }
+        .choice-card { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; padding: 28px 16px; border-radius: 18px; cursor: pointer; border: 1.5px solid var(--border); background: rgba(255,255,255,0.03); transition: 0.2s; text-align: center; }
         .choice-card:active { transform: scale(0.96); }
-        .choice-card.normal:hover  { border-color: var(--accent); background: rgba(0,229,255,0.07); }
-        .choice-card.vip:hover     { border-color: #ffd700;       background: rgba(255,215,0,0.08); }
-        .choice-card.global:hover  { border-color: #b366ff;       background: rgba(179,102,255,0.08); }
-        .global-card::before { content:''; position:absolute; top:0; left:0; width:4px; height:100%; background:#b366ff; box-shadow:2px 0 15px #b366ff; }
-        .global-badge { background:rgba(179,102,255,0.12); color:#b366ff; border:1px solid rgba(179,102,255,0.35); padding:3px 9px; border-radius:7px; font-size:0.6rem; font-weight:800; letter-spacing:0.5px; display:inline-flex; align-items:center; gap:5px; }
-        .global-hours-pill { background:rgba(179,102,255,0.08); color:#b366ff; border:1px solid rgba(179,102,255,0.2); padding:3px 10px; border-radius:8px; font-size:0.65rem; font-family:'JetBrains Mono',monospace; display:inline-flex; align-items:center; gap:5px; }
-        .choice-card .choice-icon { font-size: 2rem; line-height: 1; }
+        .choice-card.normal:hover  { border-color: var(--accent);  background: rgba(0,229,255,0.07); }
+        .choice-card.custom:hover  { border-color: var(--custom);  background: rgba(255,215,0,0.06); }
+        .choice-card.global:hover  { border-color: var(--global);  background: rgba(179,102,255,0.06); }
+        .choice-card .choice-icon  { font-size: 2rem; line-height: 1; }
         .choice-card .choice-title { font-size: 0.9rem; font-weight: 800; letter-spacing: 0.3px; }
         .choice-card .choice-desc  { font-size: 0.68rem; color: var(--muted); line-height: 1.4; }
 
-        /* --- CUSTOM KEYS --- */
-        .vip-card::before { content:''; position: absolute; top:0; left:0; width:4px; height:100%; background: #ffd700; box-shadow: 2px 0 15px #ffd700; }
-        .vip-badge { 
-            background: rgba(255,215,0,0.12); color: #ffd700; 
-            border: 1px solid rgba(255,215,0,0.35);
-            padding: 3px 9px; border-radius: 7px; font-size:0.6rem; 
-            font-weight:800; letter-spacing:0.5px; display:inline-flex; align-items:center; gap:5px;
-        }
-        .vip-hours-pill {
-            background: rgba(255,215,0,0.08); color: #ffd700;
-            border: 1px solid rgba(255,215,0,0.2);
-            padding: 3px 10px; border-radius: 8px; font-size:0.65rem;
-            font-family: 'JetBrains Mono', monospace; display:inline-flex; align-items:center; gap:5px;
-        }
-
-        /* --- MULTI SELECT --- */
+        /* ── MULTI SELECT ──────────────────────────────────── */
         .key-checkbox { display:none; }
         .select-mode .key-checkbox { display:flex; align-items:center; justify-content:center; width:22px; height:22px; border-radius:7px; border:1.5px solid var(--border); background:rgba(255,255,255,0.05); cursor:pointer; flex-shrink:0; transition:0.2s; }
         .select-mode .key-checkbox.checked { background:var(--accent); border-color:var(--accent); color:#000; }
-        .bulk-bar { 
+        .bulk-bar {
             position:fixed; bottom:105px; left:50%; transform:translateX(-50%) translateY(100px);
             background:var(--nav); border:1px solid var(--border); border-radius:20px;
             padding:12px 20px; display:flex; align-items:center; gap:12px;
@@ -220,38 +202,26 @@
         .bulk-del-btn { background:var(--red); color:#fff; border:none; padding:8px 18px; border-radius:12px; font-weight:700; cursor:pointer; font-size:0.8rem; }
         .bulk-cancel-btn { background:transparent; color:var(--muted); border:1px solid var(--border); padding:8px 14px; border-radius:12px; font-weight:700; cursor:pointer; font-size:0.8rem; }
 
-        /* --- KEY RESULT LIST (sau khi generate) --- */
-        .key-result-item { 
-            display:flex; align-items:center; justify-content:space-between;
-            background:rgba(0,0,0,0.3); border:1px solid var(--border); border-radius:10px;
-            padding:8px 12px; margin-bottom:6px; font-family:'JetBrains Mono',monospace;
-            font-size:0.75rem; color:var(--accent);
-        }
+        /* ── KEY RESULT LIST ───────────────────────────────── */
+        .key-result-item { display:flex; align-items:center; justify-content:space-between; background:rgba(0,0,0,0.3); border:1px solid var(--border); border-radius:10px; padding:8px 12px; margin-bottom:6px; font-family:'JetBrains Mono',monospace; font-size:0.75rem; color:var(--accent); }
         .key-result-item .copy-btn { background:transparent; border:none; color:var(--muted); cursor:pointer; padding:2px 6px; border-radius:6px; font-size:0.7rem; }
         .key-result-item .copy-btn:active { background:var(--accent); color:#000; }
 
-        /* --- MAINTENANCE --- */
+        /* ── MAINTENANCE ───────────────────────────────────── */
         .maint-card { border-color: rgba(255,165,0,0.35) !important; }
         .maint-card h4 { color: #ffaa00 !important; }
-        .maint-badge {
-            display: inline-flex; align-items: center; gap: 8px;
-            padding: 8px 18px; border-radius: 12px; font-size: 0.75rem;
-            font-weight: 800; letter-spacing: 0.5px; border: 1px solid;
-            transition: 0.3s; margin-bottom: 18px;
-        }
-        .maint-quick-btn {
-            background: rgba(255,165,0,0.12); color: #ffaa00;
-            border: 1px solid rgba(255,165,0,0.4); border-radius: 12px;
-            padding: 10px 20px; font-weight: 700; cursor: pointer;
-            font-size: 0.85rem; transition: 0.2s; width: 100%; margin-top: 10px;
-        }
-        .maint-quick-btn:active { transform: scale(0.97); }
+        .maint-badge { display:inline-flex; align-items:center; gap:8px; padding:8px 18px; border-radius:12px; font-size:0.75rem; font-weight:800; letter-spacing:0.5px; border:1px solid; transition:0.3s; margin-bottom:18px; }
+        .maint-quick-btn { background:rgba(255,165,0,0.12); color:#ffaa00; border:1px solid rgba(255,165,0,0.4); border-radius:12px; padding:10px 20px; font-weight:700; cursor:pointer; font-size:0.85rem; transition:0.2s; width:100%; margin-top:10px; }
+        .maint-quick-btn:active { transform:scale(0.97); }
+
+        /* ── DP CARD ───────────────────────────────────────── */
+        .dp-card { background:linear-gradient(135deg,rgba(255,255,255,0.05) 0%,rgba(255,255,255,0.01) 100%); border:1px solid var(--border); border-radius:20px; padding:25px; text-align:center; margin-top:20px; position:relative; overflow:hidden; }
+        .dp-card::after { content:''; position:absolute; top:0; left:0; width:100%; height:4px; background:linear-gradient(90deg,transparent,var(--accent),transparent); }
     </style>
 </head>
 <body>
-
     <canvas id="bgCanvas"></canvas>
-    
+
     <header>
         <div class="brand"><i class="fas fa-cube"></i> <span id="brandName">...</span></div>
         <div style="display:flex; gap:10px">
@@ -261,36 +231,44 @@
     </header>
 
     <div class="container">
-        <div id="viewLoader" style="text-align: center; padding: 100px 0;">
-            <i class="fas fa-circle-notch fa-spin" style="font-size: 2.5rem; color: var(--accent);"></i>
-            <p style="color: var(--muted); margin-top: 20px; font-weight: 600; letter-spacing: 2px; font-size: 0.8rem;">ESTABLISHING UPLINK...</p>
+        <!-- LOADER -->
+        <div id="viewLoader" style="text-align:center; padding:100px 0;">
+            <i class="fas fa-circle-notch fa-spin" style="font-size:2.5rem; color:var(--accent);"></i>
+            <p style="color:var(--muted); margin-top:20px; font-weight:600; letter-spacing:2px; font-size:0.8rem;">ESTABLISHING UPLINK...</p>
         </div>
 
+        <!-- SETUP -->
         <div id="viewSetup" class="hidden setup-box">
-            <div style="width: 60px; height: 60px; background: rgba(255,255,255,0.05); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px auto; border: 1px solid var(--border);">
-                <i class="fas fa-database" style="font-size: 1.5rem; color: var(--accent);"></i>
+            <div style="width:60px;height:60px;background:rgba(255,255,255,0.05);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;border:1px solid var(--border);">
+                <i class="fas fa-database" style="font-size:1.5rem;color:var(--accent);"></i>
             </div>
-            <h2 style="margin: 0 0 10px 0;">Connect Database</h2>
-            <div class="inp-group"><label class="inp-label">FIREBASE URL</label><input type="text" class="input-std" id="inputDbUrl" placeholder="https://..." style="padding-left: 15px;"></div>
+            <h2 style="margin:0 0 10px 0;">Connect Database</h2>
+            <div class="inp-group">
+                <label class="inp-label">FIREBASE URL</label>
+                <input type="text" class="input-std" id="inputDbUrl" placeholder="https://..." style="padding-left:15px;">
+            </div>
             <button class="btn-block" onclick="saveUrlAndConnect()">ESTABLISH CONNECTION</button>
         </div>
 
+        <!-- DASHBOARD -->
         <div id="viewDashboard" class="hidden fade-in">
-            <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:10px; margin-bottom:20px;">
-                <div class="item-card" style="align-items:center; padding:15px; margin:0; border-color: rgba(0,229,255,0.2);">
-                    <span style="font-size:1.8rem; font-weight:800; color:var(--accent);" id="statKeys">0</span>
-                    <span style="font-size:0.6rem; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing: 1px;">Keys</span>
+            <!-- STATS -->
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:20px;">
+                <div class="item-card" style="align-items:center;padding:15px;margin:0;border-color:rgba(0,229,255,0.2);">
+                    <span style="font-size:1.8rem;font-weight:800;color:var(--accent);" id="statKeys">0</span>
+                    <span style="font-size:0.6rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1px;">Keys</span>
                 </div>
-                <div class="item-card" style="align-items:center; padding:15px; margin:0; border-color: rgba(255,215,0,0.25);">
-                    <span style="font-size:1.8rem; font-weight:800; color:#ffd700;" id="statVip">0</span>
-                    <span style="font-size:0.6rem; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing: 1px;">Custom Keys</span>
+                <div class="item-card" style="align-items:center;padding:15px;margin:0;border-color:rgba(255,215,0,0.2);">
+                    <span style="font-size:1.8rem;font-weight:800;color:var(--custom);" id="statCustom">0</span>
+                    <span style="font-size:0.6rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1px;">Custom</span>
                 </div>
-                <div class="item-card" style="align-items:center; padding:15px; margin:0; border-color: rgba(0,255,157,0.2);">
-                    <span style="font-size:1.8rem; font-weight:800; color:var(--green);" id="statDevs">0</span>
-                    <span style="font-size:0.6rem; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing: 1px;">Devices</span>
+                <div class="item-card" style="align-items:center;padding:15px;margin:0;border-color:rgba(0,255,157,0.2);">
+                    <span style="font-size:1.8rem;font-weight:800;color:var(--green);" id="statDevs">0</span>
+                    <span style="font-size:0.6rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1px;">Devices</span>
                 </div>
             </div>
 
+            <!-- TAB: KEYS -->
             <div id="tabKeys">
                 <div class="controls" style="gap:8px;">
                     <div class="search"><i class="fas fa-search"></i><input type="text" class="input-std" id="searchKeys" placeholder="Search Keys..." onkeyup="renderKeys()"></div>
@@ -298,33 +276,35 @@
                     <button class="btn-main" onclick="openModal('modalKeyChoice')"><i class="fas fa-plus"></i> NEW</button>
                 </div>
                 <div class="chips" style="margin-bottom:12px;">
-                    <div class="chip active" onclick="setKeyFilter('all', this)">Tất cả</div>
-                    <div class="chip" onclick="setKeyFilter('normal', this)">Key thường</div>
-                    <div class="chip" onclick="setKeyFilter('vip', this)"><i class="fas fa-crown" style="font-size:0.7rem;color:#ffd700;margin-right:4px;"></i>Custom</div>
-                    <div class="chip" onclick="setKeyFilter('global', this)"><i class="fas fa-globe" style="font-size:0.7rem;color:#b366ff;margin-right:4px;"></i>Global</div>
+                    <div class="chip active" onclick="setKeyFilter('all',this)">Tất cả</div>
+                    <div class="chip" onclick="setKeyFilter('normal',this)">Normal</div>
+                    <div class="chip" onclick="setKeyFilter('custom',this)"><i class="fas fa-crown" style="font-size:0.7rem;color:var(--custom);margin-right:4px;"></i>Custom</div>
+                    <div class="chip" onclick="setKeyFilter('global',this)"><i class="fas fa-globe" style="font-size:0.7rem;color:var(--global);margin-right:4px;"></i>Global</div>
                 </div>
                 <div id="listKeys"></div>
             </div>
 
+            <!-- TAB: DEVICES -->
             <div id="tabDevices" class="hidden">
                 <div class="controls">
                     <div class="search"><i class="fas fa-search"></i><input type="text" class="input-std" id="searchDevs" placeholder="Search Device ID..." onkeyup="renderDevices()"></div>
                 </div>
                 <div class="chips">
-                    <div class="chip active" onclick="setDevFilter('all', this)">All Devices</div>
-                    <div class="chip" onclick="setDevFilter('allowed', this)">Allowed Only</div>
-                    <div class="chip" onclick="setDevFilter('banned', this)">Banned Only</div>
+                    <div class="chip active" onclick="setDevFilter('all',this)">All Devices</div>
+                    <div class="chip" onclick="setDevFilter('allowed',this)">Allowed Only</div>
+                    <div class="chip" onclick="setDevFilter('banned',this)">Banned Only</div>
                 </div>
                 <div id="listDevices"></div>
             </div>
 
+            <!-- TAB: CONFIG -->
             <div id="tabConfig" class="hidden">
-                <h3 style="margin-bottom:20px; color:var(--text); font-weight:800; display:flex; align-items:center; gap:10px;">
+                <h3 style="margin-bottom:20px;color:var(--text);font-weight:800;display:flex;align-items:center;gap:10px;">
                     <i class="fas fa-cogs" style="color:var(--accent)"></i> System Config
                 </h3>
-                
+
                 <div class="item-card">
-                    <h4 style="margin:0 0 15px 0; color:var(--accent); font-size:0.85rem; border-bottom:1px solid var(--border); padding-bottom:10px;">APP SETTINGS</h4>
+                    <h4 style="margin:0 0 15px 0;color:var(--accent);font-size:0.85rem;border-bottom:1px solid var(--border);padding-bottom:10px;">APP SETTINGS</h4>
                     <div class="inp-group"><label class="inp-label">APP TITLE</label><input type="text" class="input-std" id="confTitle" style="padding-left:15px"></div>
                     <div class="inp-group"><label class="inp-label">SUBTITLE</label><input type="text" class="input-std" id="confSub" style="padding-left:15px"></div>
                     <div class="inp-group"><label class="inp-label">APP VERSION</label><input type="number" class="input-std" id="confVer" style="padding-left:15px" placeholder="1"></div>
@@ -333,8 +313,8 @@
                 </div>
 
                 <div class="item-card">
-                    <h4 style="margin:0 0 15px 0; color:var(--accent); font-size:0.85rem; border-bottom:1px solid var(--border); padding-bottom:10px;">UI CUSTOMIZATION</h4>
-                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+                    <h4 style="margin:0 0 15px 0;color:var(--accent);font-size:0.85rem;border-bottom:1px solid var(--border);padding-bottom:10px;">UI CUSTOMIZATION</h4>
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
                         <div class="inp-group"><label class="inp-label">BTN ADMIN</label><input type="text" class="input-std" id="confBtnAdmin" style="padding-left:15px"></div>
                         <div class="inp-group"><label class="inp-label">BTN KEY</label><input type="text" class="input-std" id="confBtnKey" style="padding-left:15px"></div>
                     </div>
@@ -344,105 +324,154 @@
                 </div>
 
                 <div class="item-card">
-                    <h4 style="margin:0 0 15px 0; color:var(--accent); font-size:0.85rem; border-bottom:1px solid var(--border); padding-bottom:10px;">API CONNECTION</h4>
+                    <h4 style="margin:0 0 15px 0;color:var(--accent);font-size:0.85rem;border-bottom:1px solid var(--border);padding-bottom:10px;">API CONNECTION</h4>
                     <div class="inp-group"><label class="inp-label">API BASE URL</label><input type="text" class="input-std" id="confApiUrl" placeholder="https://api.example.com" style="padding-left:15px"></div>
                     <div class="inp-group"><label class="inp-label">API TOKEN</label><input type="text" class="input-std" id="confApiToken" placeholder="sk_live_..." style="padding-left:15px"></div>
                     <button class="btn-block" onclick="saveConfig()">SAVE CONFIGURATION</button>
                 </div>
 
-                <!-- MAINTENANCE CARD -->
+                <!-- MAINTENANCE -->
                 <div class="item-card maint-card">
-                    <h4 style="margin:0 0 8px 0; font-size:0.85rem; border-bottom:1px solid rgba(255,165,0,0.2); padding-bottom:10px;">
+                    <h4 style="margin:0 0 8px 0;font-size:0.85rem;border-bottom:1px solid rgba(255,165,0,0.2);padding-bottom:10px;">
                         <i class="fas fa-tools"></i> BẢO TRÌ HỆ THỐNG
                     </h4>
                     <div style="text-align:center;">
-                        <div id="maintStatusBadge" class="maint-badge">
-                            <i class="fas fa-check-circle"></i> BẢO TRÌ: TẮT
-                        </div>
+                        <div id="maintStatusBadge" class="maint-badge"><i class="fas fa-check-circle"></i> BẢO TRÌ: TẮT</div>
                     </div>
-                    <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:12px;">
+                    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
                         <div>
-                            <div style="font-size:0.8rem; font-weight:700; color:var(--text);">Chế độ bảo trì</div>
-                            <div style="font-size:0.7rem; color:var(--muted); margin-top:3px;">Khi bật, toàn bộ user sẽ bị chặn vào app</div>
+                            <div style="font-size:0.8rem;font-weight:700;color:var(--text);">Chế độ bảo trì</div>
+                            <div style="font-size:0.7rem;color:var(--muted);margin-top:3px;">Khi bật, toàn bộ user sẽ bị chặn vào app</div>
                         </div>
-                        <label class="switch" style="flex-shrink:0; margin-left:15px;">
+                        <label class="switch" style="flex-shrink:0;margin-left:15px;">
                             <input type="checkbox" id="confMaintToggle" onchange="updateMaintBadge(this.checked)">
                             <span class="slider"></span>
                         </label>
                     </div>
                     <div class="inp-group" style="margin-bottom:12px;">
                         <label class="inp-label">NỘI DUNG THÔNG BÁO</label>
-                        <input type="text" class="input-std" id="confMaintMsg"
-                            placeholder="App đang bảo trì, vui lòng quay lại sau!"
-                            style="padding-left:15px">
+                        <input type="text" class="input-std" id="confMaintMsg" placeholder="App đang bảo trì, vui lòng quay lại sau!" style="padding-left:15px">
                     </div>
-                    <button class="maint-quick-btn" onclick="saveMaintenance()">
-                        <i class="fas fa-save"></i> LƯU
-                    </button>
+                    <button class="maint-quick-btn" onclick="saveMaintenance()"><i class="fas fa-save"></i> LƯU</button>
                 </div>
-                    <i class="fas fa-code-branch" style="font-size:2rem; color:var(--accent); margin-bottom:15px;"></i>
-                    <h4 style="margin:0; font-size:1.1rem; color:var(--text);" id="panelTitle">...</h4>
-                    <div style="background:rgba(0,0,0,0.3); padding:10px; border-radius:12px; border:1px solid var(--border); display:inline-block; margin-top:15px; min-width: 200px;">
-                        <span style="font-size:0.65rem; color:var(--muted); font-weight:800; letter-spacing:1px; text-transform:uppercase;">Developed By</span><br>
-                        <span style="font-size:1.3rem; font-weight:800; color:var(--accent); text-shadow: 0 0 15px var(--accent); letter-spacing:-0.5px;" id="panelDev">...</span>
+
+                <!-- ABOUT -->
+                <div class="dp-card">
+                    <i class="fas fa-code-branch" style="font-size:2rem;color:var(--accent);margin-bottom:15px;"></i>
+                    <h4 style="margin:0;font-size:1.1rem;color:var(--text);" id="panelTitle">...</h4>
+                    <div style="background:rgba(0,0,0,0.3);padding:10px;border-radius:12px;border:1px solid var(--border);display:inline-block;margin-top:15px;min-width:200px;">
+                        <span style="font-size:0.65rem;color:var(--muted);font-weight:800;letter-spacing:1px;text-transform:uppercase;">Developed By</span><br>
+                        <span style="font-size:1.3rem;font-weight:800;color:var(--accent);text-shadow:0 0 15px var(--accent);letter-spacing:-0.5px;" id="panelDev">...</span>
                     </div>
                 </div>
 
-                <div class="item-card" style="border-color: rgba(255,0,85,0.3); margin-top: 20px;">
-                    <h4 style="margin:0 0 10px 0; color:var(--red);">DANGER ZONE</h4>
-                    <button class="btn-block" style="background: rgba(255,0,85,0.1); color: var(--red); border: 1px solid var(--red); margin-top:10px;" onclick="hardReset()">DISCONNECT DATABASE</button>
+                <!-- DANGER ZONE -->
+                <div class="item-card" style="border-color:rgba(255,0,85,0.3);margin-top:20px;">
+                    <h4 style="margin:0 0 10px 0;color:var(--red);">DANGER ZONE</h4>
+                    <button class="btn-block" style="background:rgba(255,0,85,0.1);color:var(--red);border:1px solid var(--red);margin-top:10px;" onclick="hardReset()">DISCONNECT DATABASE</button>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <!-- NAV -->
+    <div class="nav-fixed">
+        <div class="nav-inner">
+            <div class="nav-btn active" id="navKey"  onclick="switchTab('keys')"><i class="fas fa-key"></i><span class="nav-lbl">KEYS</span></div>
+            <div class="nav-btn"        id="navDev"  onclick="switchTab('devices')"><i class="fas fa-mobile-alt"></i><span class="nav-lbl">DEVICES</span></div>
+            <div class="nav-btn"        id="navConf" onclick="switchTab('config')"><i class="fas fa-sliders-h"></i><span class="nav-lbl">CONFIG</span></div>
         </div>
     </div>
 
     <!-- MODAL: CHỌN LOẠI KEY -->
     <div id="modalKeyChoice" class="modal-overlay">
         <div class="modal-content" style="max-width:320px;">
-            <h3 style="margin:0 0 6px 0; font-size:1rem;">Tạo Key Mới</h3>
-            <p style="color:var(--muted); font-size:0.75rem; margin:0 0 20px 0;">Chọn loại key bạn muốn tạo</p>
+            <h3 style="margin:0 0 6px 0;font-size:1rem;">Tạo Key Mới</h3>
+            <p style="color:var(--muted);font-size:0.75rem;margin:0 0 20px 0;">Chọn loại key bạn muốn tạo</p>
             <div class="choice-grid">
                 <div class="choice-card normal" onclick="closeModal('modalKeyChoice'); openModal('modalKey');">
                     <div class="choice-icon">🔑</div>
-                    <div class="choice-title" style="color:var(--accent);">Key Thường</div>
+                    <div class="choice-title" style="color:var(--accent);">Normal Key</div>
                     <div class="choice-desc">Random suffix<br>Dùng 1 lần rồi hết</div>
                 </div>
-                <div class="choice-card vip" onclick="closeModal('modalKeyChoice'); openModal('modalVipKey');">
+                <div class="choice-card custom" onclick="closeModal('modalKeyChoice'); openModal('modalCustomKey');">
                     <div class="choice-icon">👑</div>
-                    <div class="choice-title" style="color:#ffd700;">Key Custom</div>
+                    <div class="choice-title" style="color:var(--custom);">Custom Key</div>
                     <div class="choice-desc">Tên tự đặt<br>Tái sử dụng được</div>
                 </div>
-                <div class="choice-card global" onclick="closeModal('modalKeyChoice'); openModal('modalGlobalKey');" style="border-color:rgba(179,102,255,0.25);">
+                <div class="choice-card global" onclick="closeModal('modalKeyChoice'); openModal('modalGlobalKey');" style="border-color:rgba(179,102,255,0.2);">
                     <div class="choice-icon">🌐</div>
-                    <div class="choice-title" style="color:#b366ff;">Key Global</div>
+                    <div class="choice-title" style="color:var(--global);">Global Key</div>
                     <div class="choice-desc">Nhiều thiết bị<br>dùng cùng 1 key</div>
                 </div>
             </div>
-            <button class="btn-block" style="margin-top:16px; background:transparent; border:1px solid var(--border); color:var(--muted);" onclick="closeModal('modalKeyChoice')">HỦY</button>
+            <button class="btn-block" style="margin-top:16px;background:transparent;border:1px solid var(--border);color:var(--muted);" onclick="closeModal('modalKeyChoice')">HỦY</button>
         </div>
     </div>
 
+    <!-- MODAL: NORMAL KEY -->
     <div id="modalKey" class="modal-overlay">
         <div class="modal-content">
-            <h3 style="margin-top:0;">Generate Keys</h3>
+            <h3 style="margin-top:0;color:var(--accent);"><i class="fas fa-key"></i> Generate Normal Keys</h3>
             <div class="inp-group"><label class="inp-label">PREFIX</label><input type="text" class="input-std" id="keyPrefix" value="KEY" style="padding-left:15px"></div>
-            <div class="inp-group"><label class="inp-label">QUANTITY</label><input type="number" class="input-std" id="keyQty" value="1" style="padding-left:15px"></div>
+            <div class="inp-group"><label class="inp-label">SỐ LƯỢNG</label><input type="number" class="input-std" id="keyQty" value="1" style="padding-left:15px"></div>
             <div class="inp-group"><label class="inp-label">THỜI HẠN (GIỜ)</label><input type="number" class="input-std" id="keyHours" value="48" min="1" style="padding-left:15px"></div>
-            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
-                <button class="btn-block" style="margin-top:0" onclick="generateKeys()">GENERATE</button>
-                <button class="btn-block" style="margin-top:0; background:transparent; border:1px solid var(--border); color:var(--muted)" onclick="closeModal('modalKey')">CANCEL</button>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+                <button class="btn-block" style="margin-top:0;" onclick="generateNormalKeys()">GENERATE</button>
+                <button class="btn-block" style="margin-top:0;background:transparent;border:1px solid var(--border);color:var(--muted);" onclick="closeModal('modalKey')">CANCEL</button>
             </div>
         </div>
     </div>
 
+    <!-- MODAL: CUSTOM KEY -->
+    <div id="modalCustomKey" class="modal-overlay">
+        <div class="modal-content" style="border-color:rgba(255,215,0,0.3);">
+            <h3 style="margin-top:0;color:var(--custom);"><i class="fas fa-crown"></i> Tạo Custom Key</h3>
+            <div class="inp-group">
+                <label class="inp-label">TÊN KEY</label>
+                <input type="text" class="input-std" id="customKeyName" placeholder="Ví dụ: Dev-1, PLong-1827..." style="padding-left:15px;">
+                <div style="margin-top:6px;font-size:0.7rem;color:var(--muted);">Preview: <span id="customKeyPreview" style="color:var(--custom);font-weight:800;font-family:'JetBrains Mono',monospace;"></span></div>
+            </div>
+            <div class="inp-group">
+                <label class="inp-label">THỜI HẠN (GIỜ)</label>
+                <input type="number" class="input-std" id="customKeyHours" value="48" min="1" style="padding-left:15px">
+            </div>
+            <div style="background:rgba(255,215,0,0.06);border:1px solid rgba(255,215,0,0.2);border-radius:12px;padding:10px 14px;margin-bottom:16px;font-size:0.72rem;color:var(--custom);">
+                <i class="fas fa-infinity" style="margin-right:6px;"></i>Custom key <b>tái sử dụng được</b> — không bị xóa sau khi dùng
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+                <button class="btn-block" style="margin-top:0;background:var(--custom);color:#000;" onclick="generateCustomKey()"><i class="fas fa-crown"></i> TẠO</button>
+                <button class="btn-block" style="margin-top:0;background:transparent;border:1px solid var(--border);color:var(--muted);" onclick="closeModal('modalCustomKey')">HỦY</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: GLOBAL KEY -->
+    <div id="modalGlobalKey" class="modal-overlay">
+        <div class="modal-content" style="border-color:rgba(179,102,255,0.3);">
+            <h3 style="margin-top:0;color:var(--global);"><i class="fas fa-globe"></i> Tạo Global Key</h3>
+            <div style="background:rgba(179,102,255,0.06);border:1px solid rgba(179,102,255,0.2);border-radius:12px;padding:10px 14px;margin-bottom:16px;font-size:0.72rem;color:var(--global);">
+                <i class="fas fa-info-circle" style="margin-right:6px;"></i>Global key <b>không bị xóa</b> khi có người dùng — nhiều thiết bị có thể dùng cùng 1 key
+            </div>
+            <div class="inp-group"><label class="inp-label">PREFIX</label><input type="text" class="input-std" id="globalKeyPrefix" value="GLOBAL" style="padding-left:15px;"></div>
+            <div class="inp-group"><label class="inp-label">SỐ LƯỢNG</label><input type="number" class="input-std" id="globalKeyQty" value="1" min="1" max="50" style="padding-left:15px;"></div>
+            <div class="inp-group"><label class="inp-label">THỜI HẠN (GIỜ)</label><input type="number" class="input-std" id="globalKeyHours" value="48" min="1" style="padding-left:15px;"></div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+                <button class="btn-block" style="margin-top:0;background:var(--global);color:#fff;" onclick="generateGlobalKeys()"><i class="fas fa-globe"></i> TẠO</button>
+                <button class="btn-block" style="margin-top:0;background:transparent;border:1px solid var(--border);color:var(--muted);" onclick="closeModal('modalGlobalKey')">HỦY</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: EDIT KEY -->
     <div id="modalEdit" class="modal-overlay">
         <div class="modal-content" id="modalEditContent">
-            <div style="display:flex; align-items:center; gap:10px; margin-bottom:20px;">
-                <h3 style="margin:0; flex:1;" id="editModalTitle">Edit Key</h3>
-                <span id="editVipBadge" class="vip-badge" style="display:none;"><i class="fas fa-crown"></i> Custom</span>
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px;">
+                <h3 style="margin:0;flex:1;" id="editModalTitle">Edit Key</h3>
+                <span id="editKeyTypeBadge"></span>
             </div>
             <input type="hidden" id="editOld">
-            <input type="hidden" id="editIsVip">
+            <input type="hidden" id="editKeyType">
             <div class="inp-group">
                 <label class="inp-label">TÊN KEY</label>
                 <input type="text" class="input-std" id="editNew" style="padding-left:15px">
@@ -451,86 +480,52 @@
                 <label class="inp-label">THỜI HẠN (GIỜ)</label>
                 <input type="number" class="input-std" id="editHours" min="1" style="padding-left:15px">
             </div>
-            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
-                <button class="btn-block" style="margin-top:0" id="editSaveBtn" onclick="saveKeyEdit()">SAVE</button>
-                <button class="btn-block" style="margin-top:0; background:transparent; border:1px solid var(--border); color:var(--muted)" onclick="closeModal('modalEdit')">CANCEL</button>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+                <button class="btn-block" style="margin-top:0;" id="editSaveBtn" onclick="saveKeyEdit()">SAVE</button>
+                <button class="btn-block" style="margin-top:0;background:transparent;border:1px solid var(--border);color:var(--muted);" onclick="closeModal('modalEdit')">CANCEL</button>
             </div>
         </div>
     </div>
 
-    <div id="modalVipKey" class="modal-overlay">
-        <div class="modal-content" style="border-color: rgba(255,215,0,0.3);">
-            <h3 style="margin-top:0; color:#ffd700;"><i class="fas fa-crown"></i> Tạo Custom Key</h3>
-            <div class="inp-group">
-                <label class="inp-label">TÊN KEY</label>
-                <input type="text" class="input-std" id="vipKeyName" placeholder="Ví dụ: Dev-1, PLong-1827, ABC-0182iwj..." style="padding-left:15px;">
-                <div style="margin-top:6px; font-size:0.7rem; color:var(--muted);">
-                    Preview: <span id="vipKeyPreview" style="color:#ffd700; font-weight:800; font-family:'JetBrains Mono',monospace;"></span>
-                </div>
-            </div>
-            <div class="inp-group">
-                <label class="inp-label">THỜI HẠN (GIỜ)</label>
-                <input type="number" class="input-std" id="vipKeyHours" value="48" min="1" style="padding-left:15px">
-            </div>
-            <div style="background:rgba(255,215,0,0.06); border:1px solid rgba(255,215,0,0.2); border-radius:12px; padding:10px 14px; margin-bottom:16px; font-size:0.72rem; color:#ffd700;">
-                <i class="fas fa-infinity" style="margin-right:6px;"></i>Custom key <b>tái sử dụng được</b> — không bị xóa sau khi dùng
-            </div>
-            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
-                <button class="btn-block" style="margin-top:0; background:#ffd700; color:#000;" onclick="generateVipKey()"><i class="fas fa-crown"></i> TẠO CUSTOM KEY</button>
-                <button class="btn-block" style="margin-top:0; background:transparent; border:1px solid var(--border); color:var(--muted)" onclick="closeModal('modalVipKey')">HỦY</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="modalGlobalKey" class="modal-overlay">
-        <div class="modal-content" style="border-color: rgba(179,102,255,0.3);">
-            <h3 style="margin-top:0; color:#b366ff;"><i class="fas fa-globe"></i> Tạo Global Key</h3>
-            <div style="background:rgba(179,102,255,0.06); border:1px solid rgba(179,102,255,0.2); border-radius:12px; padding:10px 14px; margin-bottom:16px; font-size:0.72rem; color:#b366ff;">
-                <i class="fas fa-info-circle" style="margin-right:6px;"></i>Global key <b>không bị xóa</b> khi có người dùng — nhiều thiết bị có thể dùng cùng 1 key
-            </div>
-            <div class="inp-group"><label class="inp-label">PREFIX</label><input type="text" class="input-std" id="globalKeyPrefix" value="GLOBAL" style="padding-left:15px;"></div>
-            <div class="inp-group"><label class="inp-label">SỐ LƯỢNG</label><input type="number" class="input-std" id="globalKeyQty" value="1" min="1" max="50" style="padding-left:15px;"></div>
-            <div class="inp-group"><label class="inp-label">THỜI HẠN (GIỜ)</label><input type="number" class="input-std" id="globalKeyHours" value="48" min="1" style="padding-left:15px;"></div>
-            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
-                <button class="btn-block" style="margin-top:0; background:#b366ff; color:#fff;" onclick="generateGlobalKeys()"><i class="fas fa-globe"></i> TẠO GLOBAL KEY</button>
-                <button class="btn-block" style="margin-top:0; background:transparent; border:1px solid var(--border); color:var(--muted)" onclick="closeModal('modalGlobalKey')">HỦY</button>
-            </div>
-        </div>
-    </div>
-
-        <div id="modalEditDevice" class="modal-overlay">
+    <!-- MODAL: EDIT DEVICE -->
+    <div id="modalEditDevice" class="modal-overlay">
         <div class="modal-content">
             <h3 style="margin-top:0;">Edit Device</h3>
             <input type="hidden" id="editDeviceOld">
-            <input type="hidden" id="editDeviceType"> <div class="inp-group">
-                <label class="inp-label">DEVICE ID</label>
-                <input type="text" class="input-std" id="editDeviceNew" style="padding-left:15px">
-            </div>
-            <div class="inp-group">
-                <label class="inp-label">LINKED KEY</label>
-                <input type="text" class="input-std" id="editDeviceKey" style="padding-left:15px">
-            </div>
-            <div class="inp-group">
-                <label class="inp-label">EXPIRY DATE (READABLE)</label>
-                <input type="text" class="input-std" id="editDeviceExpiry" style="padding-left:15px">
-            </div>
-
-            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
-                <button class="btn-block" style="margin-top:0" onclick="saveDeviceEdit()">UPDATE</button>
-                <button class="btn-block" style="margin-top:0; background:transparent; border:1px solid var(--border); color:var(--muted)" onclick="closeModal('modalEditDevice')">CANCEL</button>
+            <input type="hidden" id="editDeviceType">
+            <div class="inp-group"><label class="inp-label">DEVICE ID</label><input type="text" class="input-std" id="editDeviceNew" style="padding-left:15px"></div>
+            <div class="inp-group"><label class="inp-label">LINKED KEY</label><input type="text" class="input-std" id="editDeviceKey" style="padding-left:15px"></div>
+            <div class="inp-group"><label class="inp-label">EXPIRY DATE</label><input type="text" class="input-std" id="editDeviceExpiry" style="padding-left:15px"></div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+                <button class="btn-block" style="margin-top:0;" onclick="saveDeviceEdit()">UPDATE</button>
+                <button class="btn-block" style="margin-top:0;background:transparent;border:1px solid var(--border);color:var(--muted);" onclick="closeModal('modalEditDevice')">CANCEL</button>
             </div>
         </div>
     </div>
 
+    <!-- MODAL: THEMES -->
     <div id="modalThemes" class="modal-overlay">
         <div class="modal-content">
             <h3 style="margin-top:0;">Select Theme</h3>
             <div class="theme-grid" id="themeList"></div>
-            <button class="btn-block" style="margin-top:15px; background:transparent; border:1px solid var(--border); color:var(--muted)" onclick="closeModal('modalThemes')">CLOSE</button>
+            <button class="btn-block" style="margin-top:15px;background:transparent;border:1px solid var(--border);color:var(--muted);" onclick="closeModal('modalThemes')">CLOSE</button>
         </div>
     </div>
 
-    <div id="toast" class="toast"><i class="fas fa-check-circle" style="color:var(--green)"></i><span>Action Successful</span></div>
+    <!-- MODAL: KEY RESULT -->
+    <div id="modalKeyResult" class="modal-overlay">
+        <div class="modal-content" style="max-height:80vh;overflow-y:auto;">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+                <h3 style="margin:0;color:var(--accent);"><i class="fas fa-key"></i> Keys đã tạo</h3>
+                <button onclick="copyAllKeys()" style="background:var(--accent);color:#000;border:none;padding:6px 14px;border-radius:10px;font-weight:700;cursor:pointer;font-size:0.75rem;"><i class="fas fa-copy"></i> Copy tất cả</button>
+            </div>
+            <div id="keyResultList"></div>
+            <button class="btn-block" style="margin-top:12px;background:transparent;border:1px solid var(--border);color:var(--muted);" onclick="closeModal('modalKeyResult')">ĐÓNG</button>
+        </div>
+    </div>
+
+    <!-- TOAST -->
+    <div id="toast" class="toast"><i class="fas fa-check-circle" style="color:var(--green)"></i><span>OK</span></div>
 
     <!-- BULK DELETE BAR -->
     <div class="bulk-bar" id="bulkBar">
@@ -539,717 +534,704 @@
         <button class="bulk-cancel-btn" onclick="toggleSelectMode()">Hủy</button>
     </div>
 
-    <!-- MODAL: KẾT QUẢ GENERATE KEYS -->
-    <div id="modalKeyResult" class="modal-overlay">
-        <div class="modal-content" style="max-height:80vh; overflow-y:auto;">
-            <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:16px;">
-                <h3 style="margin:0; color:var(--accent);"><i class="fas fa-key"></i> Keys đã tạo</h3>
-                <button onclick="copyAllKeys()" style="background:var(--accent); color:#000; border:none; padding:6px 14px; border-radius:10px; font-weight:700; cursor:pointer; font-size:0.75rem;"><i class="fas fa-copy"></i> Copy tất cả</button>
-            </div>
-            <div id="keyResultList"></div>
-            <button class="btn-block" style="margin-top:12px; background:transparent; border:1px solid var(--border); color:var(--muted);" onclick="closeModal('modalKeyResult')">ĐÓNG</button>
-        </div>
-    </div>
-
-    <div class="nav-fixed">
-        <div class="nav-inner">
-            <div class="nav-btn active" id="navKey" onclick="switchTab('keys')"><i class="fas fa-key"></i><span class="nav-lbl">KEYS</span></div>
-            <div class="nav-btn" id="navDev" onclick="switchTab('devices')"><i class="fas fa-mobile-alt"></i><span class="nav-lbl">DEVICES</span></div>
-            <div class="nav-btn" id="navConf" onclick="switchTab('config')"><i class="fas fa-sliders-h"></i><span class="nav-lbl">CONFIG</span></div>
-        </div>
-    </div>
-
     <script>
-        // ==========================================
-        // 1. CONFIG & INIT
-        // ==========================================
-        let dbUrl = localStorage.getItem("gateway_db_url") || "";
-        let dbData = null;
-        let devFilter = 'all';
-        let themes = ['cyberpunk', 'gold', 'ice', 'nature', 'itachi', 'gojo', 'luffy', 'matrix', 'demon', 'blood'];
-        let curTheme = localStorage.getItem("gateway_theme") || "cyberpunk";
+    // ══════════════════════════════════════════════════════
+    // 1. INIT & CONFIG
+    // ══════════════════════════════════════════════════════
+    let dbUrl    = localStorage.getItem("gateway_db_url") || "";
+    let dbData   = null;
+    let devFilter = 'all';
+    let keyFilter = 'all';
+    let themes   = ['cyberpunk','gold','ice','nature','itachi','gojo','luffy','matrix','demon','blood'];
+    let curTheme = localStorage.getItem("gateway_theme") || "cyberpunk";
 
-        // ENCRYPTED CREDITS
-        const _s1 = "U2VydmVyIEtleSBBZG1pbiB2MS4x"; 
-        const _s2 = "UExvbmdEZXY=";
+    const _s1 = "U2VydmVyIEtleSBBZG1pbiB2MS4y";
+    const _s2 = "UExvbmdEZXY=";
 
-        const DEFAULT_DATA = { 
-            "Config": { 
-                "Title": "PLongDev Custom", "Subtitle": "Server Key Admin v1.1", "AdminUrl": "", "UpdateUrl": "",
-                "AppVersion": 1, "KeyDurationHours": 24,
-                "Maintenance": false,
-                "MaintenanceMsg": "App đang bảo trì, vui lòng quay lại sau!",
-                "Api": { "BaseUrl": "", "Token": "" },
-                "Texts": { "BtnAdmin": "Hỗ Trợ", "BtnKey": "Get Key", "BtnLogin": "Xác Nhận", "Hint": "Nhập Key Vào Đây" }
-            }, 
-            "BannedDevices": {}, "ActivatedUsers": {}, "ValidKeys": {} 
-        };
-
-        const canvas = document.getElementById('bgCanvas');
-        const ctx = canvas.getContext('2d');
-        let particles = [];
-        let animationId;
-
-        function initDecryption() {
-            try {
-                document.getElementById('brandName').innerText = atob(_s1);
-                document.getElementById('panelTitle').innerText = atob(_s1);
-                document.getElementById('panelDev').innerText = atob(_s2);
-            } catch(e) {}
+    const DEFAULT_DATA = {
+        Config: {
+            Title: "PLongDev Custom", Subtitle: "Server Key Admin v1.2", AdminUrl: "", UpdateUrl: "",
+            AppVersion: 1, KeyDurationHours: 24, Maintenance: false,
+            MaintenanceMsg: "App đang bảo trì, vui lòng quay lại sau!",
+            Api: { BaseUrl: "", Token: "" },
+            Texts: { BtnAdmin: "Hỗ Trợ", BtnKey: "Get Key", BtnLogin: "Xác Nhận", Hint: "Nhập Key Vào Đây" }
+        },
+        BannedDevices: {},
+        ActivatedUsers: {},
+        ValidKeys: {
+            NormalKey: {},
+            CustomKey: {},
+            GlobalKey: {}
         }
+    };
 
-        async function appInit(isManual = false) {
-            initDecryption();
-            document.documentElement.setAttribute('data-theme', curTheme);
-            setAnimation(curTheme);
+    const canvas = document.getElementById('bgCanvas');
+    const ctx    = canvas.getContext('2d');
+    let particles = [], animationId;
 
-            document.getElementById('viewLoader').classList.remove('hidden');
-            document.getElementById('viewSetup').classList.add('hidden');
-            document.getElementById('viewDashboard').classList.add('hidden');
-            document.querySelector('.nav-fixed').classList.add('hidden');
+    function initDecryption() {
+        try {
+            document.getElementById('brandName').innerText  = atob(_s1);
+            document.getElementById('panelTitle').innerText = atob(_s1);
+            document.getElementById('panelDev').innerText   = atob(_s2);
+        } catch(e) {}
+    }
 
-            if (!dbUrl) {
-                setTimeout(() => {
-                    document.getElementById('viewLoader').classList.add('hidden');
-                    document.getElementById('viewSetup').classList.remove('hidden');
-                }, 800);
-                return;
-            }
+    async function appInit(isManual = false) {
+        initDecryption();
+        document.documentElement.setAttribute('data-theme', curTheme);
+        setAnimation(curTheme);
 
-            const finalUrl = sanitizeUrl(dbUrl);
-            const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), 10000);
+        document.getElementById('viewLoader').classList.remove('hidden');
+        document.getElementById('viewSetup').classList.add('hidden');
+        document.getElementById('viewDashboard').classList.add('hidden');
+        document.querySelector('.nav-fixed').classList.add('hidden');
 
-            try {
-                const response = await fetch(finalUrl, { signal: controller.signal });
-                clearTimeout(timeoutId);
-                if (!response.ok) throw new Error("Connection failed");
-                let data = await response.json();
-
-                if (!data) {
-                    await fetch(finalUrl, { method: 'PUT', body: JSON.stringify(DEFAULT_DATA) });
-                    data = DEFAULT_DATA;
-                }
-
-                dbData = data;
-                ensureDataStructure();
-                renderAll();
-
-                document.getElementById('viewLoader').classList.add('hidden');
-                document.getElementById('viewDashboard').classList.remove('hidden');
-                document.querySelector('.nav-fixed').classList.remove('hidden');
-                if(isManual) showToast("System Reloaded");
-
-            } catch (err) {
+        if (!dbUrl) {
+            setTimeout(() => {
                 document.getElementById('viewLoader').classList.add('hidden');
                 document.getElementById('viewSetup').classList.remove('hidden');
-                showToast("Connection Error");
+            }, 800);
+            return;
+        }
+
+        const finalUrl   = sanitizeUrl(dbUrl);
+        const controller = new AbortController();
+        const timeoutId  = setTimeout(() => controller.abort(), 10000);
+
+        try {
+            const response = await fetch(finalUrl, { signal: controller.signal });
+            clearTimeout(timeoutId);
+            if (!response.ok) throw new Error("Connection failed");
+            let data = await response.json();
+
+            if (!data) {
+                await fetch(finalUrl, { method: 'PUT', body: JSON.stringify(DEFAULT_DATA) });
+                data = DEFAULT_DATA;
             }
+
+            dbData = data;
+            ensureDataStructure();
+            renderAll();
+
+            document.getElementById('viewLoader').classList.add('hidden');
+            document.getElementById('viewDashboard').classList.remove('hidden');
+            document.querySelector('.nav-fixed').classList.remove('hidden');
+            if (isManual) showToast("System Reloaded");
+        } catch (err) {
+            document.getElementById('viewLoader').classList.add('hidden');
+            document.getElementById('viewSetup').classList.remove('hidden');
+            showToast("Connection Error");
         }
+    }
 
-        function saveUrlAndConnect() {
-            let inp = document.getElementById('inputDbUrl').value.trim();
-            if(!inp) return showToast("Invalid URL");
-        
-            if(!inp.startsWith("http")) {
-                inp = "https://" + inp;
-            }
-        
-            // CHỈ thêm domain nếu người dùng nhập sai hoàn toàn
-            if(
-                !inp.includes("firebaseio.com") &&
-                !inp.includes("firebasedatabase.app")
-            ){
-                inp += ".firebaseio.com";
-            }
-        
-            localStorage.setItem("gateway_db_url", inp);
-            dbUrl = inp;
-            appInit();
-        }
+    function saveUrlAndConnect() {
+        let inp = document.getElementById('inputDbUrl').value.trim();
+        if (!inp) return showToast("Invalid URL");
+        if (!inp.startsWith("http")) inp = "https://" + inp;
+        if (!inp.includes("firebaseio.com") && !inp.includes("firebasedatabase.app")) inp += ".firebaseio.com";
+        localStorage.setItem("gateway_db_url", inp);
+        dbUrl = inp;
+        appInit();
+    }
 
-        function sanitizeUrl(url) { return url.endsWith("/") ? url + ".json" : url + "/.json"; }
+    function sanitizeUrl(url) { return url.endsWith("/") ? url + ".json" : url + "/.json"; }
 
-        function ensureDataStructure() {
-            if(!dbData.ValidKeys) dbData.ValidKeys = {};
-            if(!dbData.ActivatedUsers) dbData.ActivatedUsers = {};
-            if(!dbData.BannedDevices) dbData.BannedDevices = {};
-            if(!dbData.Config) dbData.Config = DEFAULT_DATA.Config;
-            if(!dbData.Config.Api) dbData.Config.Api = { BaseUrl: "", Token: "" };
-            if(!dbData.Config.Texts) dbData.Config.Texts = DEFAULT_DATA.Config.Texts;
-            if(dbData.Config.Maintenance === undefined) dbData.Config.Maintenance = false;
-            if(!dbData.Config.MaintenanceMsg) dbData.Config.MaintenanceMsg = DEFAULT_DATA.Config.MaintenanceMsg;
-        }
+    function ensureDataStructure() {
+        if (!dbData.ValidKeys)         dbData.ValidKeys = {};
+        if (!dbData.ValidKeys.NormalKey) dbData.ValidKeys.NormalKey = {};
+        if (!dbData.ValidKeys.CustomKey) dbData.ValidKeys.CustomKey = {};
+        if (!dbData.ValidKeys.GlobalKey) dbData.ValidKeys.GlobalKey = {};
+        if (!dbData.ActivatedUsers)    dbData.ActivatedUsers = {};
+        if (!dbData.BannedDevices)     dbData.BannedDevices  = {};
+        if (!dbData.Config)            dbData.Config = DEFAULT_DATA.Config;
+        if (!dbData.Config.Api)        dbData.Config.Api = { BaseUrl: "", Token: "" };
+        if (!dbData.Config.Texts)      dbData.Config.Texts = DEFAULT_DATA.Config.Texts;
+        if (dbData.Config.Maintenance === undefined) dbData.Config.Maintenance = false;
+        if (!dbData.Config.MaintenanceMsg) dbData.Config.MaintenanceMsg = DEFAULT_DATA.Config.MaintenanceMsg;
+    }
 
-        async function syncDB() {
-            try {
-                await fetch(sanitizeUrl(dbUrl), { method: 'PUT', body: JSON.stringify(dbData) });
-                showToast("Saved");
-                renderAll();
-            } catch (e) { showToast("Save Failed"); }
-        }
+    async function syncDB() {
+        try {
+            await fetch(sanitizeUrl(dbUrl), { method: 'PUT', body: JSON.stringify(dbData) });
+            showToast("Saved");
+            renderAll();
+        } catch (e) { showToast("Save Failed"); }
+    }
 
-        function hardReset() {
-            if(confirm("Disconnect?")) { localStorage.removeItem("gateway_db_url"); location.reload(); }
-        }
+    function hardReset() {
+        if (confirm("Disconnect?")) { localStorage.removeItem("gateway_db_url"); location.reload(); }
+    }
 
-        // ==========================================
-        // 3. RENDERERS
-        // ==========================================
-        function renderAll() {
-            renderKeys();
-            renderDevices();
-            const allKeys    = Object.values(dbData.ValidKeys);
-            const vipCount    = allKeys.filter(v => typeof v === 'object' && v.VIP === true).length;
-            const globalCount = allKeys.filter(v => typeof v === 'object' && v.Global === true).length;
-            document.getElementById('statKeys').innerText = Object.keys(dbData.ValidKeys).length;
-            document.getElementById('statVip').innerText  = vipCount + (globalCount ? '+'+globalCount+'🌐' : '');
-            document.getElementById('statDevs').innerText = Object.keys(dbData.ActivatedUsers).length + Object.keys(dbData.BannedDevices).length;
-            
-            document.getElementById('confTitle').value = dbData.Config.Title || "";
-            document.getElementById('confSub').value = dbData.Config.Subtitle || "";
-            document.getElementById('confUrl').value = dbData.Config.AdminUrl || "";
-            document.getElementById('confVer').value = dbData.Config.AppVersion || 1;
-            document.getElementById('confUpdateUrl').value = dbData.Config.UpdateUrl || "";
-            document.getElementById('confDuration').value = dbData.Config.KeyDurationHours || 24;
+    // ══════════════════════════════════════════════════════
+    // 2. RENDERERS
+    // ══════════════════════════════════════════════════════
+    function renderAll() {
+        renderKeys();
+        renderDevices();
 
-            document.getElementById('confBtnAdmin').value = dbData.Config.Texts.BtnAdmin || "";
-            document.getElementById('confBtnKey').value = dbData.Config.Texts.BtnKey || "";
-            document.getElementById('confBtnLogin').value = dbData.Config.Texts.BtnLogin || "";
-            document.getElementById('confHint').value = dbData.Config.Texts.Hint || "";
+        const nCount = Object.keys(dbData.ValidKeys.NormalKey).length;
+        const cCount = Object.keys(dbData.ValidKeys.CustomKey).length;
+        const gCount = Object.keys(dbData.ValidKeys.GlobalKey).length;
+        document.getElementById('statKeys').innerText   = nCount + cCount + gCount;
+        document.getElementById('statCustom').innerText = cCount + (gCount ? '+' + gCount + '🌐' : '');
+        document.getElementById('statDevs').innerText   = Object.keys(dbData.ActivatedUsers).length + Object.keys(dbData.BannedDevices).length;
 
-            document.getElementById('confApiUrl').value = dbData.Config.Api.BaseUrl || "";
-            document.getElementById('confApiToken').value = dbData.Config.Api.Token || "";
+        document.getElementById('confTitle').value     = dbData.Config.Title || "";
+        document.getElementById('confSub').value       = dbData.Config.Subtitle || "";
+        document.getElementById('confUrl').value       = dbData.Config.AdminUrl || "";
+        document.getElementById('confVer').value       = dbData.Config.AppVersion || 1;
+        document.getElementById('confUpdateUrl').value = dbData.Config.UpdateUrl || "";
+        document.getElementById('confDuration').value  = dbData.Config.KeyDurationHours || 24;
+        document.getElementById('confBtnAdmin').value  = dbData.Config.Texts.BtnAdmin || "";
+        document.getElementById('confBtnKey').value    = dbData.Config.Texts.BtnKey   || "";
+        document.getElementById('confBtnLogin').value  = dbData.Config.Texts.BtnLogin || "";
+        document.getElementById('confHint').value      = dbData.Config.Texts.Hint     || "";
+        document.getElementById('confApiUrl').value    = dbData.Config.Api.BaseUrl    || "";
+        document.getElementById('confApiToken').value  = dbData.Config.Api.Token      || "";
 
-            const isMaint = dbData.Config.Maintenance === true;
-            document.getElementById('confMaintToggle').checked = isMaint;
-            document.getElementById('confMaintMsg').value = dbData.Config.MaintenanceMsg || "";
-            updateMaintBadge(isMaint);
-        }
+        const isMaint = dbData.Config.Maintenance === true;
+        document.getElementById('confMaintToggle').checked = isMaint;
+        document.getElementById('confMaintMsg').value      = dbData.Config.MaintenanceMsg || "";
+        updateMaintBadge(isMaint);
+    }
 
-        let keyFilter = 'all';
-        function setKeyFilter(f, el) {
-            keyFilter = f;
-            document.querySelectorAll('#tabKeys .chip').forEach(c => c.classList.remove('active'));
-            el.classList.add('active');
-            renderKeys();
-        }
+    function setKeyFilter(f, el) {
+        keyFilter = f;
+        document.querySelectorAll('#tabKeys .chip').forEach(c => c.classList.remove('active'));
+        el.classList.add('active');
+        renderKeys();
+    }
 
-        function renderKeys() {
-            const list = document.getElementById('listKeys');
-            const search = document.getElementById('searchKeys').value.toLowerCase();
-            list.innerHTML = "";
-            Object.keys(dbData.ValidKeys).reverse().forEach(key => {
+    function renderKeys() {
+        const list   = document.getElementById('listKeys');
+        const search = document.getElementById('searchKeys').value.toLowerCase();
+        list.innerHTML = "";
+
+        const sections = [
+            { type: 'normal', data: dbData.ValidKeys.NormalKey },
+            { type: 'custom', data: dbData.ValidKeys.CustomKey },
+            { type: 'global', data: dbData.ValidKeys.GlobalKey }
+        ];
+
+        sections.forEach(({ type, data }) => {
+            if (keyFilter !== 'all' && keyFilter !== type) return;
+            Object.keys(data).reverse().forEach(key => {
                 if (search && !key.toLowerCase().includes(search)) return;
-                const val = dbData.ValidKeys[key];
-                const isVip    = typeof val === 'object' && val.VIP === true;
-                const isGlobal = typeof val === 'object' && val.Global === true;
-                if (keyFilter === 'vip'    && !isVip)    return;
-                if (keyFilter === 'global' && !isGlobal) return;
-                if (keyFilter === 'normal' && (isVip || isGlobal)) return;
+                const val   = data[key];
+                const hours = val && val.Hours ? val.Hours : '-';
 
-                const hours = typeof val === 'object' ? (val.Hours || '-') : '-';
-                const cardClass = isVip    ? 'item-card vip-card'
-                                : isGlobal ? 'item-card global-card'
-                                           : 'item-card active-card';
-                const vipTag = isVip
-                    ? `<span class="vip-badge"><i class="fas fa-crown"></i> Custom</span>`
-                    : isGlobal
+                const cardClass = type === 'custom' ? 'item-card custom-card'
+                                : type === 'global' ? 'item-card global-card'
+                                                    : 'item-card normal-card';
+
+                const typeBadge = type === 'custom'
+                    ? `<span class="custom-badge"><i class="fas fa-crown"></i> Custom</span>`
+                    : type === 'global'
                         ? `<span class="global-badge"><i class="fas fa-globe"></i> Global</span>`
-                        : `<span class="badge active"><i class="fas fa-key"></i> KEY</span>`;
-                const hoursPill = isVip
-                    ? `<span class="vip-hours-pill"><i class="fas fa-clock"></i> ${hours}h</span>`
-                    : isGlobal
+                        : `<span class="normal-badge"><i class="fas fa-key"></i> Normal</span>`;
+
+                const hoursPill = type === 'custom'
+                    ? `<span class="custom-hours-pill"><i class="fas fa-clock"></i> ${hours}h</span>`
+                    : type === 'global'
                         ? `<span class="global-hours-pill"><i class="fas fa-clock"></i> ${hours}h</span>`
-                        : (typeof val === 'object' && val.Hours
-                            ? `<div class="info-pill"><i class="fas fa-clock"></i> ${val.Hours}h</div>`
-                            : '');
+                        : `<span class="normal-hours-pill"><i class="fas fa-clock"></i> ${hours}h</span>`;
+
+                const keyColor = type === 'custom' ? 'color:var(--custom);'
+                               : type === 'global' ? 'color:var(--global);'
+                               : 'color:var(--accent);';
+
+                const editBtnStyle = type === 'custom'
+                    ? 'border-color:rgba(255,215,0,0.4);color:var(--custom);'
+                    : type === 'global'
+                        ? 'border-color:rgba(179,102,255,0.4);color:var(--global);'
+                        : '';
+
+                const uid = `${type}::${key}`;
+                const isChecked = selectedKeys.has(uid);
 
                 list.innerHTML += `
-                <div class="${cardClass}" data-key="${key}" onclick="selectMode ? toggleKeySelect('${key}') : null" style="${selectMode?'cursor:pointer;':''}">
+                <div class="${cardClass}" data-uid="${uid}" onclick="selectMode ? toggleKeySelect('${uid}') : null" style="${selectMode ? 'cursor:pointer;' : ''}">
                     <div class="row-top">
-                        <div style="display:flex; align-items:center; gap:8px; flex:1; min-width:0;">
-                            <div class="key-checkbox ${selectMode && selectedKeys.has(key) ? 'checked' : ''}" onclick="event.stopPropagation(); toggleKeySelect('${key}')">
-                                ${selectMode && selectedKeys.has(key) ? '<i class="fas fa-check" style="font-size:0.6rem"></i>' : ''}
+                        <div style="display:flex;align-items:center;gap:8px;flex:1;min-width:0;">
+                            <div class="key-checkbox ${isChecked ? 'checked' : ''}" onclick="event.stopPropagation();toggleKeySelect('${uid}')">
+                                ${isChecked ? '<i class="fas fa-check" style="font-size:0.6rem"></i>' : ''}
                             </div>
-                            <div style="display:flex; flex-direction:column; gap:6px; padding-left:4px; flex:1; min-width:0;">
-                                ${vipTag}
-                                <span class="mono-text" onclick="event.stopPropagation(); copy('${key}')" style="${isVip?'color:#ffd700;': isGlobal?'color:#b366ff;':''}">${key}</span>
-                                ${hoursPill ? `<div style="margin-top:2px;">${hoursPill}</div>` : ''}
-                            </div>
-                        </div>
-                        <div style="display:flex; gap:8px; flex-shrink:0;" onclick="event.stopPropagation()">
-                            ${!selectMode ? `<div class="icon-btn" style="width:32px; height:32px; ${isVip?'border-color:rgba(255,215,0,0.4);color:#ffd700;': isGlobal?'border-color:rgba(179,102,255,0.4);color:#b366ff;':''}" onclick="editKey('${key}')"><i class="fas fa-pen" style="font-size:0.8rem"></i></div>` : ''}
-                            <div class="icon-btn" style="width:32px; height:32px; border-color:var(--red); color:var(--red);" onclick="delKey('${key}')"><i class="fas fa-trash" style="font-size:0.8rem;"></i></div>
-                        </div>
-                    </div>
-                </div>`;
-            });
-            if(list.innerHTML === "") list.innerHTML = `<div style="text-align:center; padding:40px; color:var(--muted); font-size:0.8rem;">Không có key nào</div>`;
-        }
-
-        function renderDevices() {
-            const list = document.getElementById('listDevices');
-            const search = document.getElementById('searchDevs').value.toLowerCase();
-            list.innerHTML = "";
-            const allDevs = [...new Set([...Object.keys(dbData.ActivatedUsers), ...Object.keys(dbData.BannedDevices)])];
-            
-            allDevs.forEach(dev => {
-                if(!dev) return;
-                if(search && !dev.toLowerCase().includes(search)) return;
-                const isBanned = dbData.BannedDevices[dev] !== undefined;
-                if (devFilter === 'allowed' && isBanned) return;
-                if (devFilter === 'banned' && !isBanned) return;
-
-                let devData = isBanned ? dbData.BannedDevices[dev] : dbData.ActivatedUsers[dev];
-                let expiry = "N/A", keyUsed = "Unknown";
-                
-                if(typeof devData === 'object') {
-                    expiry = devData.ExpiryReadable || "N/A";
-                    keyUsed = devData.Key || "N/A";
-                } else {
-                     try {
-                        const d = new Date(devData);
-                        if(!isNaN(d)) expiry = d.toLocaleDateString();
-                        else expiry = devData; 
-                    } catch(e) { expiry = devData; }
-                }
-
-                const statusClass = isBanned ? 'banned-card' : 'active-card';
-                const statusText = isBanned ? 'BANNED' : 'AUTHORIZED';
-                const badgeClass = isBanned ? 'banned' : 'active';
-                const icon = isBanned ? 'fa-ban' : 'fa-mobile-alt';
-
-                list.innerHTML += `
-                <div class="item-card ${statusClass}">
-                    <div class="row-top" style="padding:0">
-                        <div class="device-info">
-                            <div class="device-icon"><i class="fas ${icon}"></i></div>
-                            <div style="display:flex; flex-direction:column;">
-                                <span class="mono-text" style="font-size:0.85rem;" onclick="copy('${dev}')">${dev}</span>
-                                <span style="font-size:0.65rem; color:var(--muted); font-weight:600; margin-top:2px;">ID: ${dev.substring(0,8)}...</span>
+                            <div style="display:flex;flex-direction:column;gap:6px;padding-left:4px;flex:1;min-width:0;">
+                                ${typeBadge}
+                                <span class="mono-text" style="${keyColor}" onclick="event.stopPropagation();copy('${key}')">${key}</span>
+                                <div style="margin-top:2px;">${hoursPill}</div>
                             </div>
                         </div>
-                        <label class="switch">
-                            <input type="checkbox" ${isBanned ? 'checked' : ''} onchange="toggleBan('${dev}')">
-                            <span class="slider"></span>
-                        </label>
-                    </div>
-                    
-                    <div style="display:flex; gap:5px; flex-wrap:wrap; margin-top:8px;">
-                         <div class="info-pill"><i class="fas fa-key"></i> ${keyUsed}</div>
-                         <div class="info-pill"><i class="far fa-clock"></i> ${expiry}</div>
-                    </div>
-
-                    <div class="meta-row" style="margin-top:5px;">
-                        <span class="badge ${badgeClass}">${statusText}</span>
-                        <div style="display:flex; gap:8px;">
-                            <div class="icon-btn" style="width:28px; height:28px; border:none; background:transparent;" onclick="editDevice('${dev}', ${isBanned})">
-                                <i class="fas fa-pen" style="font-size:0.8rem"></i>
-                            </div>
-                            <div class="icon-btn" style="width:28px; height:28px; border:none; background:transparent; color:var(--red);" onclick="delDevice('${dev}')">
-                                <i class="fas fa-trash" style="font-size:0.8rem"></i>
-                            </div>
+                        <div style="display:flex;gap:8px;flex-shrink:0;" onclick="event.stopPropagation()">
+                            ${!selectMode ? `<div class="icon-btn" style="width:32px;height:32px;${editBtnStyle}" onclick="editKey('${key}','${type}')"><i class="fas fa-pen" style="font-size:0.8rem"></i></div>` : ''}
+                            <div class="icon-btn" style="width:32px;height:32px;border-color:var(--red);color:var(--red);" onclick="delKey('${uid}')"><i class="fas fa-trash" style="font-size:0.8rem;"></i></div>
                         </div>
                     </div>
                 </div>`;
             });
-            if(list.innerHTML === "") list.innerHTML = `<div style="text-align:center; padding:40px; color:var(--muted); font-size:0.8rem;">No Devices Found</div>`;
-        }
-
-        // ==========================================
-        // 4. ACTIONS
-        // ==========================================
-        let _lastGeneratedKeys = [];
-
-        function generateKeys() {
-            const qty    = Math.min(parseInt(document.getElementById('keyQty').value) || 1, 100);
-            const prefix = document.getElementById('keyPrefix').value.toUpperCase();
-            const hours  = parseInt(document.getElementById('keyHours').value) || (dbData.Config.KeyDurationHours || 24);
-            _lastGeneratedKeys = [];
-            for(let i = 0; i < qty; i++) {
-                const rnd = Math.random().toString(36).substring(2, 10).toUpperCase();
-                const k   = prefix ? `${prefix}-${rnd}` : rnd;
-                dbData.ValidKeys[k] = { Hours: hours, CreatedAt: new Date().toISOString(), VIP: false };
-                _lastGeneratedKeys.push(k);
-            }
-            closeModal('modalKey');
-            syncDB();
-            // Hiện modal kết quả
-            const resultList = document.getElementById('keyResultList');
-            resultList.innerHTML = _lastGeneratedKeys.map(k =>
-                `<div class="key-result-item">
-                    <span>${k}</span>
-                    <button class="copy-btn" onclick="copy('${k}')"><i class="fas fa-copy"></i> Copy</button>
-                </div>`
-            ).join('');
-            openModal('modalKeyResult');
-        }
-
-        function copyAllKeys() {
-            navigator.clipboard.writeText(_lastGeneratedKeys.join('\n'))
-                .then(() => showToast('✅ Đã copy ' + _lastGeneratedKeys.length + ' key!'));
-        }
-
-        function generateVipKey() {
-            const name = document.getElementById('vipKeyName').value.trim();
-            if (!name) { showToast("Nhập tên Custom key!"); return; }
-            const hours = parseInt(document.getElementById('vipKeyHours').value) || 48;
-            const k = name; // Tên key hoàn toàn tự do, không ép prefix
-            if (dbData.ValidKeys[k]) { showToast("Key đã tồn tại!"); return; }
-            dbData.ValidKeys[k] = { Hours: hours, CreatedAt: new Date().toISOString(), VIP: true };
-            closeModal('modalVipKey');
-            document.getElementById('vipKeyName').value = '';
-            document.getElementById('vipKeyPreview').innerText = '';
-            syncDB();
-        }
-
-        function generateGlobalKeys() {
-            const prefix = document.getElementById('globalKeyPrefix').value.toUpperCase() || 'GLOBAL';
-            const qty    = Math.min(parseInt(document.getElementById('globalKeyQty').value) || 1, 50);
-            const hours  = parseInt(document.getElementById('globalKeyHours').value) || (dbData.Config.KeyDurationHours || 48);
-            _lastGeneratedKeys = [];
-            for(let i = 0; i < qty; i++) {
-                const rnd = Math.random().toString(36).substring(2, 10).toUpperCase();
-                const k   = `${prefix}-${rnd}`;
-                dbData.ValidKeys[k] = { Hours: hours, CreatedAt: new Date().toISOString(), VIP: false, Global: true };
-                _lastGeneratedKeys.push(k);
-            }
-            closeModal('modalGlobalKey');
-            syncDB();
-            // Hiện modal kết quả
-            const resultList = document.getElementById('keyResultList');
-            resultList.innerHTML = _lastGeneratedKeys.map(k =>
-                `<div class="key-result-item" style="border-color:rgba(179,102,255,0.3); color:#b366ff;">
-                    <span>🌐 ${k}</span>
-                    <button class="copy-btn" onclick="copy('${k}')"><i class="fas fa-copy"></i> Copy</button>
-                </div>`
-            ).join('');
-            openModal('modalKeyResult');
-        }
-
-        function toggleBan(dev) {
-            if (dbData.BannedDevices[dev]) {
-                dbData.ActivatedUsers[dev] = dbData.BannedDevices[dev];
-                delete dbData.BannedDevices[dev];
-            } else {
-                dbData.BannedDevices[dev] = dbData.ActivatedUsers[dev];
-                delete dbData.ActivatedUsers[dev];
-            }
-            syncDB();
-        }
-
-        function delDevice(dev) {
-            if(confirm("Permanently delete this device and all its data?")) {
-                if(dbData.ActivatedUsers[dev]) delete dbData.ActivatedUsers[dev];
-                if(dbData.BannedDevices[dev]) delete dbData.BannedDevices[dev];
-                syncDB();
-            }
-        }
-
-        function saveConfig() {
-            dbData.Config.Title = document.getElementById('confTitle').value;
-            dbData.Config.Subtitle = document.getElementById('confSub').value;
-            dbData.Config.AdminUrl = document.getElementById('confUrl').value;
-            dbData.Config.AppVersion = parseInt(document.getElementById('confVer').value) || 1;
-            dbData.Config.UpdateUrl = document.getElementById('confUpdateUrl').value;
-            dbData.Config.KeyDurationHours = parseInt(document.getElementById('confDuration').value) || 24;
-            
-            if(!dbData.Config.Texts) dbData.Config.Texts = {};
-            dbData.Config.Texts.BtnAdmin = document.getElementById('confBtnAdmin').value;
-            dbData.Config.Texts.BtnKey = document.getElementById('confBtnKey').value;
-            dbData.Config.Texts.BtnLogin = document.getElementById('confBtnLogin').value;
-            dbData.Config.Texts.Hint = document.getElementById('confHint').value;
-
-            dbData.Config.Api.BaseUrl = document.getElementById('confApiUrl').value;
-            dbData.Config.Api.Token = document.getElementById('confApiToken').value;
-
-            dbData.Config.Maintenance = document.getElementById('confMaintToggle').checked;
-            dbData.Config.MaintenanceMsg = document.getElementById('confMaintMsg').value || "App đang bảo trì, vui lòng quay lại sau!";
-            
-            syncDB();
-        }
-
-        function editKey(key) {
-            const val    = dbData.ValidKeys[key];
-            const isVip  = typeof val === 'object' && val.VIP === true;
-            const hours  = typeof val === 'object' ? (val.Hours || '') : '';
-
-            document.getElementById('editOld').value   = key;
-            document.getElementById('editNew').value   = key;
-            document.getElementById('editHours').value = hours;
-            document.getElementById('editIsVip').value = isVip ? '1' : '0';
-
-            // Đổi màu & title theo loại key
-            const content = document.getElementById('modalEditContent');
-            const badge   = document.getElementById('editVipBadge');
-            const title   = document.getElementById('editModalTitle');
-            const saveBtn = document.getElementById('editSaveBtn');
-
-            if (isVip) {
-                content.style.borderColor = 'rgba(255,215,0,0.35)';
-                title.style.color = '#ffd700';
-                badge.style.display = 'inline-flex';
-                saveBtn.style.background = '#ffd700';
-                saveBtn.style.color = '#000';
-            } else {
-                content.style.borderColor = '';
-                title.style.color = '';
-                badge.style.display = 'none';
-                saveBtn.style.background = '';
-                saveBtn.style.color = '';
-            }
-
-            openModal('modalEdit');
-        }
-
-        function saveKeyEdit() {
-            const oldK  = document.getElementById('editOld').value;
-            const newK  = document.getElementById('editNew').value.trim();
-            const hours = parseInt(document.getElementById('editHours').value) || 0;
-            const isVip = document.getElementById('editIsVip').value === '1';
-
-            if (!newK) return;
-
-            // Lấy data cũ — giữ nguyên nếu là object, tạo mới nếu là string cũ
-            let existing = dbData.ValidKeys[oldK];
-            if (typeof existing !== 'object' || existing === null) {
-                existing = { CreatedAt: new Date().toISOString() };
-            }
-
-            // Cập nhật Hours nếu nhập hợp lệ
-            if (hours > 0) existing.Hours = hours;
-
-            // Giữ nguyên VIP flag
-            existing.VIP = isVip;
-
-            // Đổi tên key nếu có thay đổi
-            if (newK !== oldK) {
-                dbData.ValidKeys[newK] = existing;
-                delete dbData.ValidKeys[oldK];
-            } else {
-                dbData.ValidKeys[oldK] = existing;
-            }
-
-            syncDB();
-            closeModal('modalEdit');
-        }
-
-        function saveDeviceEdit() {
-            const oldDev = document.getElementById('editDeviceOld').value;
-            const newDev = document.getElementById('editDeviceNew').value.trim();
-            const newKey = document.getElementById('editDeviceKey').value.trim();
-            const newExpiry = document.getElementById('editDeviceExpiry').value.trim();
-            const type = document.getElementById('editDeviceType').value;
-
-            let targetObj = (type === 'banned') ? dbData.BannedDevices : dbData.ActivatedUsers;
-            let currentData = targetObj[oldDev];
-
-            if(typeof currentData !== 'object') {
-                currentData = { ExpiryReadable: currentData, Key: "Unknown", ExpiryMs: 0 };
-            }
-
-            currentData.Key = newKey;
-            currentData.ExpiryReadable = newExpiry;
-
-            if(newDev !== oldDev) {
-                targetObj[newDev] = currentData;
-                delete targetObj[oldDev];
-            } else {
-                targetObj[oldDev] = currentData;
-            }
-
-            syncDB();
-            closeModal('modalEditDevice');
-        }
-
-        function updateMaintBadge(active) {
-            const badge = document.getElementById('maintStatusBadge');
-            if (!badge) return;
-            if (active) {
-                badge.innerHTML = '<i class="fas fa-tools"></i> BẢO TRÌ: BẬT';
-                badge.style.background = 'rgba(255,165,0,0.15)';
-                badge.style.color = '#ffaa00';
-                badge.style.borderColor = 'rgba(255,165,0,0.4)';
-            } else {
-                badge.innerHTML = '<i class="fas fa-check-circle"></i> BẢO TRÌ: TẮT';
-                badge.style.background = 'rgba(0,255,157,0.1)';
-                badge.style.color = 'var(--green)';
-                badge.style.borderColor = 'rgba(0,255,157,0.2)';
-            }
-        }
-
-        // quickToggleMaintenance removed — dùng saveMaintenance()
-
-        function delKey(key) {
-            if(selectMode) { toggleKeySelect(key); return; }
-            if(confirm("Xóa key này?")) { delete dbData.ValidKeys[key]; syncDB(); }
-        }
-
-        // ── MULTI SELECT ──────────────────────────────────────────────
-        let selectMode   = false;
-        let selectedKeys = new Set();
-
-        function toggleSelectMode() {
-            selectMode = !selectMode;
-            selectedKeys.clear();
-            const listKeys = document.getElementById('listKeys');
-            if (selectMode) {
-                listKeys.classList.add('select-mode');
-                document.getElementById('btnSelectMode').innerHTML = '<i class="fas fa-times"></i>';
-                document.getElementById('btnSelectMode').style.background = 'var(--red)';
-            } else {
-                listKeys.classList.remove('select-mode');
-                document.getElementById('btnSelectMode').innerHTML = '<i class="fas fa-check-square"></i>';
-                document.getElementById('btnSelectMode').style.background = '';
-                document.getElementById('bulkBar').classList.remove('show');
-            }
-            renderKeys();
-        }
-
-        function toggleKeySelect(key) {
-            if(selectedKeys.has(key)) selectedKeys.delete(key);
-            else selectedKeys.add(key);
-            // Cập nhật checkbox UI
-            const cb = document.querySelector(`[data-key="${key}"] .key-checkbox`);
-            if(cb) cb.classList.toggle('checked', selectedKeys.has(key));
-            // Cập nhật bulk bar
-            const count = selectedKeys.size;
-            document.getElementById('bulkCount').innerText = count + ' đã chọn';
-            document.getElementById('bulkBar').classList.toggle('show', count > 0);
-        }
-
-        function bulkDeleteKeys() {
-            if(selectedKeys.size === 0) return;
-            if(!confirm(`Xóa ${selectedKeys.size} key đã chọn?`)) return;
-            selectedKeys.forEach(k => delete dbData.ValidKeys[k]);
-            selectedKeys.clear();
-            toggleSelectMode();
-            syncDB();
-            showToast('🗑️ Đã xóa!');
-        }
-
-        // ── SAVE MAINTENANCE ──────────────────────────────────────────
-        async function saveMaintenance() {
-            if (!dbData) return;
-            dbData.Config.Maintenance    = document.getElementById('confMaintToggle').checked;
-            dbData.Config.MaintenanceMsg = document.getElementById('confMaintMsg').value || "App đang bảo trì, vui lòng quay lại sau!";
-            updateMaintBadge(dbData.Config.Maintenance);
-            await syncDB();
-            showToast(dbData.Config.Maintenance ? "🔧 Bảo trì đã BẬT" : "✅ Bảo trì đã TẮT");
-        }
-
-        // ==========================================
-        // 5. UI & ANIMATION
-        // ==========================================
-        function showToast(msg) {
-            const t = document.getElementById('toast');
-            t.querySelector('span').innerText = msg;
-            t.classList.add('show');
-            setTimeout(() => t.classList.remove('show'), 2000);
-        }
-        function copy(txt) { navigator.clipboard.writeText(txt).then(() => showToast("Copied")); }
-        function openModal(id) { document.getElementById(id).classList.add('open'); }
-        function closeModal(id) { document.getElementById(id).classList.remove('open'); }
-        function editDevice(dev, isBanned) {
-            document.getElementById('editDeviceOld').value = dev;
-            document.getElementById('editDeviceNew').value = dev;
-            document.getElementById('editDeviceType').value = isBanned ? 'banned' : 'allowed';
-
-            let data = isBanned ? dbData.BannedDevices[dev] : dbData.ActivatedUsers[dev];
-            if(typeof data === 'object') {
-                document.getElementById('editDeviceKey').value = data.Key || "";
-                document.getElementById('editDeviceExpiry').value = data.ExpiryReadable || "";
-            } else {
-                document.getElementById('editDeviceKey').value = "";
-                document.getElementById('editDeviceExpiry').value = data; 
-            }
-            openModal('modalEditDevice');
-        }
-
-        function setDevFilter(f, el) {
-            devFilter = f;
-            document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
-            el.classList.add('active');
-            renderDevices();
-        }
-        function switchTab(tab) {
-            ['Keys', 'Devices', 'Config'].forEach(t => document.getElementById(`tab${t}`).classList.add('hidden'));
-            ['Key', 'Dev', 'Conf'].forEach(n => document.getElementById(`nav${n}`).classList.remove('active'));
-            if(tab === 'keys') { document.getElementById('tabKeys').classList.remove('hidden'); document.getElementById('navKey').classList.add('active'); }
-            else if(tab === 'devices') { document.getElementById('tabDevices').classList.remove('hidden'); document.getElementById('navDev').classList.add('active'); }
-            else { document.getElementById('tabConfig').classList.remove('hidden'); document.getElementById('navConf').classList.add('active'); }
-        }
-
-        // --- THEME SELECTOR ---
-        function openThemeModal() {
-            const grid = document.getElementById('themeList');
-            grid.innerHTML = "";
-            themes.forEach(t => {
-                grid.innerHTML += `<div class="theme-btn" onclick="selectTheme('${t}')">${t.toUpperCase()}</div>`;
-            });
-            openModal('modalThemes');
-        }
-
-        function selectTheme(theme) {
-            curTheme = theme;
-            localStorage.setItem("gateway_theme", theme);
-            document.documentElement.setAttribute('data-theme', theme);
-            setAnimation(theme);
-            closeModal('modalThemes');
-            showToast(`Theme Set: ${theme.toUpperCase()}`);
-        }
-
-        function setAnimation(theme) {
-            if(animationId) cancelAnimationFrame(animationId);
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-            if (theme === 'matrix') initMatrix();
-            else if (theme === 'demon') initDemonParticles();
-            else if (theme === 'luffy') initLuffyParticles();
-            else initParticles(theme);
-        }
-        function initParticles(theme) {
-            particles = [];
-            const color = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim();
-            for(let i=0; i<15; i++) particles.push({ x: Math.random()*canvas.width, y: Math.random()*canvas.height, v: Math.random()*0.4+0.1, s: Math.random()*2 });
-            function loop() {
-                ctx.clearRect(0,0,canvas.width,canvas.height);
-                ctx.fillStyle = color; ctx.globalAlpha = 0.3;
-                particles.forEach(p => { p.y -= p.v; if(p.y < 0) p.y = canvas.height; ctx.beginPath(); ctx.arc(p.x, p.y, p.s, 0, Math.PI*2); ctx.fill(); });
-                animationId = requestAnimationFrame(loop);
-            }
-            loop();
-        }
-        function initMatrix() {
-            const fontSize = 14; const columns = canvas.width / fontSize; const drops = Array(Math.floor(columns)).fill(1);
-            ctx.font = fontSize + "px monospace"; let frame = 0;
-            function loop() {
-                if (frame % 6 === 0) {
-                    ctx.fillStyle = "rgba(0, 0, 0, 0.1)"; ctx.fillRect(0, 0, canvas.width, canvas.height); ctx.fillStyle = "#0F0";
-                    drops.forEach((y, i) => { const text = String.fromCharCode(0x30A0 + Math.random() * 96); ctx.fillText(text, i * fontSize, y * fontSize); if (y * fontSize > canvas.height && Math.random() > 0.98) drops[i] = 0; drops[i]++; });
-                }
-                frame++; animationId = requestAnimationFrame(loop);
-            }
-            loop();
-        }
-        function initLuffyParticles() {
-            particles = []; for(let i=0; i<12; i++) particles.push({ x: Math.random()*canvas.width, y: Math.random()*canvas.height, v: Math.random()*0.8+0.2, s: Math.random()*4+1 });
-            function loop() { ctx.clearRect(0,0,canvas.width,canvas.height); ctx.fillStyle = "#ffffff"; ctx.globalAlpha = 0.2; particles.forEach(p => { p.y -= p.v; if(p.y < 0) p.y = canvas.height; ctx.beginPath(); ctx.arc(p.x, p.y, p.s, 0, Math.PI*2); ctx.fill(); }); animationId = requestAnimationFrame(loop); } loop();
-        }
-        function initDemonParticles() {
-            particles = []; for(let i=0; i<15; i++) particles.push({ x: Math.random()*canvas.width, y: Math.random()*canvas.height, vx: Math.random()*2-1, vy: Math.random()*2-1 });
-            function loop() { ctx.clearRect(0,0,canvas.width,canvas.height); ctx.fillStyle = "#00ffcc"; ctx.globalAlpha = 0.4; particles.forEach(p => { p.x += p.vx; p.y += p.vy; if(p.x<0||p.x>canvas.width) p.vx*=-1; if(p.y<0||p.y>canvas.height) p.vy*=-1; ctx.beginPath(); ctx.arc(p.x, p.y, 1.5, 0, Math.PI*2); ctx.fill(); }); animationId = requestAnimationFrame(loop); } loop();
-        }
-
-        window.addEventListener('resize', () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; });
-
-        // Custom key name live preview
-        document.getElementById('vipKeyName').addEventListener('input', function() {
-            document.getElementById('vipKeyPreview').innerText = this.value || '';
         });
 
-        appInit();
+        if (list.innerHTML === "") list.innerHTML = `<div style="text-align:center;padding:40px;color:var(--muted);font-size:0.8rem;">Không có key nào</div>`;
+    }
+
+    function renderDevices() {
+        const list   = document.getElementById('listDevices');
+        const search = document.getElementById('searchDevs').value.toLowerCase();
+        list.innerHTML = "";
+        const allDevs = [...new Set([...Object.keys(dbData.ActivatedUsers), ...Object.keys(dbData.BannedDevices)])];
+
+        allDevs.forEach(dev => {
+            if (!dev) return;
+            if (search && !dev.toLowerCase().includes(search)) return;
+            const isBanned = dbData.BannedDevices[dev] !== undefined;
+            if (devFilter === 'allowed' && isBanned)  return;
+            if (devFilter === 'banned'  && !isBanned) return;
+
+            let devData = isBanned ? dbData.BannedDevices[dev] : dbData.ActivatedUsers[dev];
+            let expiry = "N/A", keyUsed = "Unknown";
+
+            if (typeof devData === 'object') {
+                expiry  = devData.ExpiryReadable || "N/A";
+                keyUsed = devData.Key || "N/A";
+            } else {
+                try { const d = new Date(devData); expiry = !isNaN(d) ? d.toLocaleDateString() : devData; }
+                catch(e) { expiry = devData; }
+            }
+
+            const statusClass = isBanned ? 'banned-card' : 'active-card';
+            const statusText  = isBanned ? 'BANNED' : 'AUTHORIZED';
+            const badgeClass  = isBanned ? 'banned' : 'active';
+            const icon        = isBanned ? 'fa-ban' : 'fa-mobile-alt';
+
+            list.innerHTML += `
+            <div class="item-card ${statusClass}">
+                <div class="row-top" style="padding:0">
+                    <div class="device-info">
+                        <div class="device-icon"><i class="fas ${icon}"></i></div>
+                        <div style="display:flex;flex-direction:column;">
+                            <span class="mono-text" style="font-size:0.85rem;" onclick="copy('${dev}')">${dev}</span>
+                            <span style="font-size:0.65rem;color:var(--muted);font-weight:600;margin-top:2px;">ID: ${dev.substring(0,8)}...</span>
+                        </div>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox" ${isBanned ? 'checked' : ''} onchange="toggleBan('${dev}')">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div style="display:flex;gap:5px;flex-wrap:wrap;margin-top:8px;">
+                    <div class="info-pill"><i class="fas fa-key"></i> ${keyUsed}</div>
+                    <div class="info-pill"><i class="far fa-clock"></i> ${expiry}</div>
+                </div>
+                <div class="meta-row" style="margin-top:5px;">
+                    <span class="badge ${badgeClass}">${statusText}</span>
+                    <div style="display:flex;gap:8px;">
+                        <div class="icon-btn" style="width:28px;height:28px;border:none;background:transparent;" onclick="editDevice('${dev}',${isBanned})">
+                            <i class="fas fa-pen" style="font-size:0.8rem"></i>
+                        </div>
+                        <div class="icon-btn" style="width:28px;height:28px;border:none;background:transparent;color:var(--red);" onclick="delDevice('${dev}')">
+                            <i class="fas fa-trash" style="font-size:0.8rem"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>`;
+        });
+
+        if (list.innerHTML === "") list.innerHTML = `<div style="text-align:center;padding:40px;color:var(--muted);font-size:0.8rem;">No Devices Found</div>`;
+    }
+
+    // ══════════════════════════════════════════════════════
+    // 3. KEY ACTIONS
+    // ══════════════════════════════════════════════════════
+    let _lastGeneratedKeys = [];
+
+    function generateNormalKeys() {
+        const qty    = Math.min(parseInt(document.getElementById('keyQty').value) || 1, 100);
+        const prefix = document.getElementById('keyPrefix').value.toUpperCase();
+        const hours  = parseInt(document.getElementById('keyHours').value) || (dbData.Config.KeyDurationHours || 24);
+        _lastGeneratedKeys = [];
+        for (let i = 0; i < qty; i++) {
+            const rnd = Math.random().toString(36).substring(2, 10).toUpperCase();
+            const k   = prefix ? `${prefix}-${rnd}` : rnd;
+            dbData.ValidKeys.NormalKey[k] = { Hours: hours, CreatedAt: new Date().toISOString() };
+            _lastGeneratedKeys.push(k);
+        }
+        closeModal('modalKey');
+        syncDB();
+        showKeyResult(_lastGeneratedKeys, 'normal');
+    }
+
+    function generateCustomKey() {
+        const name  = document.getElementById('customKeyName').value.trim();
+        if (!name) { showToast("Nhập tên Custom key!"); return; }
+        const hours = parseInt(document.getElementById('customKeyHours').value) || 48;
+        if (dbData.ValidKeys.CustomKey[name]) { showToast("Key đã tồn tại!"); return; }
+        dbData.ValidKeys.CustomKey[name] = { Hours: hours, CreatedAt: new Date().toISOString() };
+        closeModal('modalCustomKey');
+        document.getElementById('customKeyName').value = '';
+        document.getElementById('customKeyPreview').innerText = '';
+        syncDB();
+    }
+
+    function generateGlobalKeys() {
+        const prefix = document.getElementById('globalKeyPrefix').value.toUpperCase() || 'GLOBAL';
+        const qty    = Math.min(parseInt(document.getElementById('globalKeyQty').value) || 1, 50);
+        const hours  = parseInt(document.getElementById('globalKeyHours').value) || (dbData.Config.KeyDurationHours || 48);
+        _lastGeneratedKeys = [];
+        for (let i = 0; i < qty; i++) {
+            const rnd = Math.random().toString(36).substring(2, 10).toUpperCase();
+            const k   = `${prefix}-${rnd}`;
+            dbData.ValidKeys.GlobalKey[k] = { Hours: hours, CreatedAt: new Date().toISOString() };
+            _lastGeneratedKeys.push(k);
+        }
+        closeModal('modalGlobalKey');
+        syncDB();
+        showKeyResult(_lastGeneratedKeys, 'global');
+    }
+
+    function showKeyResult(keys, type) {
+        const accentColor = type === 'custom' ? 'var(--custom)' : type === 'global' ? 'var(--global)' : 'var(--accent)';
+        const borderStyle = type === 'global' ? 'border-color:rgba(179,102,255,0.3);' : type === 'custom' ? 'border-color:rgba(255,215,0,0.3);' : '';
+        document.getElementById('keyResultList').innerHTML = keys.map(k =>
+            `<div class="key-result-item" style="${borderStyle}color:${accentColor};">
+                <span>${type === 'global' ? '🌐 ' : type === 'custom' ? '👑 ' : '🔑 '}${k}</span>
+                <button class="copy-btn" onclick="copy('${k}')"><i class="fas fa-copy"></i> Copy</button>
+            </div>`
+        ).join('');
+        openModal('modalKeyResult');
+    }
+
+    function copyAllKeys() {
+        navigator.clipboard.writeText(_lastGeneratedKeys.join('\n'))
+            .then(() => showToast('✅ Đã copy ' + _lastGeneratedKeys.length + ' key!'));
+    }
+
+    // uid = "type::keyname"
+    function delKey(uid) {
+        if (selectMode) { toggleKeySelect(uid); return; }
+        const [type, key] = uid.split('::');
+        if (confirm("Xóa key này?")) {
+            const bucket = type === 'custom' ? 'CustomKey' : type === 'global' ? 'GlobalKey' : 'NormalKey';
+            delete dbData.ValidKeys[bucket][key];
+            syncDB();
+        }
+    }
+
+    function editKey(key, type) {
+        const bucket = type === 'custom' ? 'CustomKey' : type === 'global' ? 'GlobalKey' : 'NormalKey';
+        const val    = dbData.ValidKeys[bucket][key];
+        const hours  = val && val.Hours ? val.Hours : '';
+
+        document.getElementById('editOld').value     = key;
+        document.getElementById('editNew').value     = key;
+        document.getElementById('editHours').value   = hours;
+        document.getElementById('editKeyType').value = type;
+
+        const content = document.getElementById('modalEditContent');
+        const badge   = document.getElementById('editKeyTypeBadge');
+        const title   = document.getElementById('editModalTitle');
+        const saveBtn = document.getElementById('editSaveBtn');
+
+        if (type === 'custom') {
+            content.style.borderColor = 'rgba(255,215,0,0.35)';
+            title.style.color         = 'var(--custom)';
+            badge.innerHTML           = `<span class="custom-badge"><i class="fas fa-crown"></i> Custom</span>`;
+            saveBtn.style.background  = 'var(--custom)';
+            saveBtn.style.color       = '#000';
+        } else if (type === 'global') {
+            content.style.borderColor = 'rgba(179,102,255,0.35)';
+            title.style.color         = 'var(--global)';
+            badge.innerHTML           = `<span class="global-badge"><i class="fas fa-globe"></i> Global</span>`;
+            saveBtn.style.background  = 'var(--global)';
+            saveBtn.style.color       = '#fff';
+        } else {
+            content.style.borderColor = '';
+            title.style.color         = 'var(--accent)';
+            badge.innerHTML           = `<span class="normal-badge"><i class="fas fa-key"></i> Normal</span>`;
+            saveBtn.style.background  = '';
+            saveBtn.style.color       = '';
+        }
+        openModal('modalEdit');
+    }
+
+    function saveKeyEdit() {
+        const oldK  = document.getElementById('editOld').value;
+        const newK  = document.getElementById('editNew').value.trim();
+        const hours = parseInt(document.getElementById('editHours').value) || 0;
+        const type  = document.getElementById('editKeyType').value;
+        if (!newK) return;
+
+        const bucket = type === 'custom' ? 'CustomKey' : type === 'global' ? 'GlobalKey' : 'NormalKey';
+        let existing = dbData.ValidKeys[bucket][oldK];
+        if (typeof existing !== 'object' || existing === null) existing = { CreatedAt: new Date().toISOString() };
+        if (hours > 0) existing.Hours = hours;
+
+        if (newK !== oldK) {
+            dbData.ValidKeys[bucket][newK] = existing;
+            delete dbData.ValidKeys[bucket][oldK];
+        } else {
+            dbData.ValidKeys[bucket][oldK] = existing;
+        }
+        syncDB();
+        closeModal('modalEdit');
+    }
+
+    // ── MULTI SELECT ──────────────────────────────────────
+    let selectMode   = false;
+    let selectedKeys = new Set(); // stores uid = "type::key"
+
+    function toggleSelectMode() {
+        selectMode = !selectMode;
+        selectedKeys.clear();
+        const listEl = document.getElementById('listKeys');
+        if (selectMode) {
+            listEl.classList.add('select-mode');
+            document.getElementById('btnSelectMode').innerHTML = '<i class="fas fa-times"></i>';
+            document.getElementById('btnSelectMode').style.background = 'var(--red)';
+        } else {
+            listEl.classList.remove('select-mode');
+            document.getElementById('btnSelectMode').innerHTML = '<i class="fas fa-check-square"></i>';
+            document.getElementById('btnSelectMode').style.background = '';
+            document.getElementById('bulkBar').classList.remove('show');
+        }
+        renderKeys();
+    }
+
+    function toggleKeySelect(uid) {
+        if (selectedKeys.has(uid)) selectedKeys.delete(uid);
+        else selectedKeys.add(uid);
+
+        const cb = document.querySelector(`[data-uid="${uid}"] .key-checkbox`);
+        if (cb) {
+            cb.classList.toggle('checked', selectedKeys.has(uid));
+            cb.innerHTML = selectedKeys.has(uid) ? '<i class="fas fa-check" style="font-size:0.6rem"></i>' : '';
+        }
+        const count = selectedKeys.size;
+        document.getElementById('bulkCount').innerText = count + ' đã chọn';
+        document.getElementById('bulkBar').classList.toggle('show', count > 0);
+    }
+
+    function bulkDeleteKeys() {
+        if (selectedKeys.size === 0) return;
+        if (!confirm(`Xóa ${selectedKeys.size} key đã chọn?`)) return;
+        selectedKeys.forEach(uid => {
+            const [type, key] = uid.split('::');
+            const bucket = type === 'custom' ? 'CustomKey' : type === 'global' ? 'GlobalKey' : 'NormalKey';
+            delete dbData.ValidKeys[bucket][key];
+        });
+        selectedKeys.clear();
+        toggleSelectMode();
+        syncDB();
+        showToast('🗑️ Đã xóa!');
+    }
+
+    // ══════════════════════════════════════════════════════
+    // 4. DEVICE ACTIONS
+    // ══════════════════════════════════════════════════════
+    function toggleBan(dev) {
+        if (dbData.BannedDevices[dev]) {
+            dbData.ActivatedUsers[dev] = dbData.BannedDevices[dev];
+            delete dbData.BannedDevices[dev];
+        } else {
+            dbData.BannedDevices[dev] = dbData.ActivatedUsers[dev];
+            delete dbData.ActivatedUsers[dev];
+        }
+        syncDB();
+    }
+
+    function delDevice(dev) {
+        if (confirm("Permanently delete this device?")) {
+            if (dbData.ActivatedUsers[dev]) delete dbData.ActivatedUsers[dev];
+            if (dbData.BannedDevices[dev])  delete dbData.BannedDevices[dev];
+            syncDB();
+        }
+    }
+
+    function editDevice(dev, isBanned) {
+        document.getElementById('editDeviceOld').value  = dev;
+        document.getElementById('editDeviceNew').value  = dev;
+        document.getElementById('editDeviceType').value = isBanned ? 'banned' : 'allowed';
+
+        let data = isBanned ? dbData.BannedDevices[dev] : dbData.ActivatedUsers[dev];
+        if (typeof data === 'object') {
+            document.getElementById('editDeviceKey').value    = data.Key || "";
+            document.getElementById('editDeviceExpiry').value = data.ExpiryReadable || "";
+        } else {
+            document.getElementById('editDeviceKey').value    = "";
+            document.getElementById('editDeviceExpiry').value = data;
+        }
+        openModal('modalEditDevice');
+    }
+
+    function saveDeviceEdit() {
+        const oldDev    = document.getElementById('editDeviceOld').value;
+        const newDev    = document.getElementById('editDeviceNew').value.trim();
+        const newKey    = document.getElementById('editDeviceKey').value.trim();
+        const newExpiry = document.getElementById('editDeviceExpiry').value.trim();
+        const type      = document.getElementById('editDeviceType').value;
+
+        let targetObj   = type === 'banned' ? dbData.BannedDevices : dbData.ActivatedUsers;
+        let currentData = targetObj[oldDev];
+        if (typeof currentData !== 'object') currentData = { ExpiryReadable: currentData, Key: "Unknown", ExpiryMs: 0 };
+        currentData.Key = newKey;
+        currentData.ExpiryReadable = newExpiry;
+
+        if (newDev !== oldDev) {
+            targetObj[newDev] = currentData;
+            delete targetObj[oldDev];
+        } else {
+            targetObj[oldDev] = currentData;
+        }
+        syncDB();
+        closeModal('modalEditDevice');
+    }
+
+    // ══════════════════════════════════════════════════════
+    // 5. CONFIG
+    // ══════════════════════════════════════════════════════
+    function saveConfig() {
+        dbData.Config.Title            = document.getElementById('confTitle').value;
+        dbData.Config.Subtitle         = document.getElementById('confSub').value;
+        dbData.Config.AdminUrl         = document.getElementById('confUrl').value;
+        dbData.Config.AppVersion       = parseInt(document.getElementById('confVer').value) || 1;
+        dbData.Config.UpdateUrl        = document.getElementById('confUpdateUrl').value;
+        dbData.Config.KeyDurationHours = parseInt(document.getElementById('confDuration').value) || 24;
+        if (!dbData.Config.Texts) dbData.Config.Texts = {};
+        dbData.Config.Texts.BtnAdmin  = document.getElementById('confBtnAdmin').value;
+        dbData.Config.Texts.BtnKey    = document.getElementById('confBtnKey').value;
+        dbData.Config.Texts.BtnLogin  = document.getElementById('confBtnLogin').value;
+        dbData.Config.Texts.Hint      = document.getElementById('confHint').value;
+        dbData.Config.Api.BaseUrl     = document.getElementById('confApiUrl').value;
+        dbData.Config.Api.Token       = document.getElementById('confApiToken').value;
+        dbData.Config.Maintenance     = document.getElementById('confMaintToggle').checked;
+        dbData.Config.MaintenanceMsg  = document.getElementById('confMaintMsg').value || "App đang bảo trì, vui lòng quay lại sau!";
+        syncDB();
+    }
+
+    async function saveMaintenance() {
+        if (!dbData) return;
+        dbData.Config.Maintenance    = document.getElementById('confMaintToggle').checked;
+        dbData.Config.MaintenanceMsg = document.getElementById('confMaintMsg').value || "App đang bảo trì, vui lòng quay lại sau!";
+        updateMaintBadge(dbData.Config.Maintenance);
+        await syncDB();
+        showToast(dbData.Config.Maintenance ? "🔧 Bảo trì đã BẬT" : "✅ Bảo trì đã TẮT");
+    }
+
+    function updateMaintBadge(active) {
+        const badge = document.getElementById('maintStatusBadge');
+        if (!badge) return;
+        if (active) {
+            badge.innerHTML        = '<i class="fas fa-tools"></i> BẢO TRÌ: BẬT';
+            badge.style.background = 'rgba(255,165,0,0.15)';
+            badge.style.color      = '#ffaa00';
+            badge.style.borderColor= 'rgba(255,165,0,0.4)';
+        } else {
+            badge.innerHTML        = '<i class="fas fa-check-circle"></i> BẢO TRÌ: TẮT';
+            badge.style.background = 'rgba(0,255,157,0.1)';
+            badge.style.color      = 'var(--green)';
+            badge.style.borderColor= 'rgba(0,255,157,0.2)';
+        }
+    }
+
+    // ══════════════════════════════════════════════════════
+    // 6. UI HELPERS
+    // ══════════════════════════════════════════════════════
+    function showToast(msg) {
+        const t = document.getElementById('toast');
+        t.querySelector('span').innerText = msg;
+        t.classList.add('show');
+        setTimeout(() => t.classList.remove('show'), 2000);
+    }
+    function copy(txt) { navigator.clipboard.writeText(txt).then(() => showToast("Copied")); }
+    function openModal(id)  { document.getElementById(id).classList.add('open'); }
+    function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+    function setDevFilter(f, el) {
+        devFilter = f;
+        document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+        el.classList.add('active');
+        renderDevices();
+    }
+
+    function switchTab(tab) {
+        ['Keys','Devices','Config'].forEach(t => document.getElementById(`tab${t}`).classList.add('hidden'));
+        ['Key','Dev','Conf'].forEach(n => document.getElementById(`nav${n}`).classList.remove('active'));
+        if (tab === 'keys')    { document.getElementById('tabKeys').classList.remove('hidden');    document.getElementById('navKey').classList.add('active'); }
+        else if (tab === 'devices') { document.getElementById('tabDevices').classList.remove('hidden'); document.getElementById('navDev').classList.add('active'); }
+        else                   { document.getElementById('tabConfig').classList.remove('hidden');  document.getElementById('navConf').classList.add('active'); }
+    }
+
+    // ── THEME ─────────────────────────────────────────────
+    function openThemeModal() {
+        const grid = document.getElementById('themeList');
+        grid.innerHTML = "";
+        themes.forEach(t => { grid.innerHTML += `<div class="theme-btn" onclick="selectTheme('${t}')">${t.toUpperCase()}</div>`; });
+        openModal('modalThemes');
+    }
+    function selectTheme(theme) {
+        curTheme = theme;
+        localStorage.setItem("gateway_theme", theme);
+        document.documentElement.setAttribute('data-theme', theme);
+        setAnimation(theme);
+        closeModal('modalThemes');
+        showToast(`Theme: ${theme.toUpperCase()}`);
+    }
+
+    // ── ANIMATIONS ────────────────────────────────────────
+    function setAnimation(theme) {
+        if (animationId) cancelAnimationFrame(animationId);
+        canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+        if (theme === 'matrix')       initMatrix();
+        else if (theme === 'demon')   initDemonParticles();
+        else if (theme === 'luffy')   initLuffyParticles();
+        else                          initParticles(theme);
+    }
+    function initParticles(theme) {
+        particles = [];
+        const color = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim();
+        for (let i = 0; i < 15; i++) particles.push({ x: Math.random()*canvas.width, y: Math.random()*canvas.height, v: Math.random()*0.4+0.1, s: Math.random()*2 });
+        function loop() {
+            ctx.clearRect(0,0,canvas.width,canvas.height);
+            ctx.fillStyle = color; ctx.globalAlpha = 0.3;
+            particles.forEach(p => { p.y -= p.v; if (p.y < 0) p.y = canvas.height; ctx.beginPath(); ctx.arc(p.x, p.y, p.s, 0, Math.PI*2); ctx.fill(); });
+            animationId = requestAnimationFrame(loop);
+        }
+        loop();
+    }
+    function initMatrix() {
+        const fontSize = 14, columns = canvas.width / fontSize, drops = Array(Math.floor(columns)).fill(1);
+        ctx.font = fontSize + "px monospace"; let frame = 0;
+        function loop() {
+            if (frame % 6 === 0) {
+                ctx.fillStyle = "rgba(0,0,0,0.1)"; ctx.fillRect(0,0,canvas.width,canvas.height);
+                ctx.fillStyle = "#0F0";
+                drops.forEach((y,i) => { const text = String.fromCharCode(0x30A0 + Math.random()*96); ctx.fillText(text, i*fontSize, y*fontSize); if (y*fontSize > canvas.height && Math.random() > 0.98) drops[i] = 0; drops[i]++; });
+            }
+            frame++; animationId = requestAnimationFrame(loop);
+        }
+        loop();
+    }
+    function initLuffyParticles() {
+        particles = [];
+        for (let i = 0; i < 12; i++) particles.push({ x: Math.random()*canvas.width, y: Math.random()*canvas.height, v: Math.random()*0.8+0.2, s: Math.random()*4+1 });
+        function loop() { ctx.clearRect(0,0,canvas.width,canvas.height); ctx.fillStyle = "#ffffff"; ctx.globalAlpha = 0.2; particles.forEach(p => { p.y -= p.v; if (p.y < 0) p.y = canvas.height; ctx.beginPath(); ctx.arc(p.x, p.y, p.s, 0, Math.PI*2); ctx.fill(); }); animationId = requestAnimationFrame(loop); }
+        loop();
+    }
+    function initDemonParticles() {
+        particles = [];
+        for (let i = 0; i < 15; i++) particles.push({ x: Math.random()*canvas.width, y: Math.random()*canvas.height, vx: Math.random()*2-1, vy: Math.random()*2-1 });
+        function loop() { ctx.clearRect(0,0,canvas.width,canvas.height); ctx.fillStyle = "#00ffcc"; ctx.globalAlpha = 0.4; particles.forEach(p => { p.x += p.vx; p.y += p.vy; if (p.x<0||p.x>canvas.width) p.vx*=-1; if (p.y<0||p.y>canvas.height) p.vy*=-1; ctx.beginPath(); ctx.arc(p.x, p.y, 1.5, 0, Math.PI*2); ctx.fill(); }); animationId = requestAnimationFrame(loop); }
+        loop();
+    }
+
+    window.addEventListener('resize', () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; });
+
+    // Custom key name live preview
+    document.getElementById('customKeyName').addEventListener('input', function() {
+        document.getElementById('customKeyPreview').innerText = this.value || '';
+    });
+
+    appInit();
     </script>
 </body>
 </html>
