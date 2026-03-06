@@ -256,6 +256,10 @@
                 <label class="inp-label">FIREBASE URL</label>
                 <input type="text" class="input-std" id="inputDbUrl" placeholder="https://..." style="padding-left:15px;">
             </div>
+            <div class="inp-group">
+                <label class="inp-label">DATABASE SECRET KEY</label>
+                <input type="password" class="input-std" id="inputDbSecret" placeholder="Firebase secret..." style="padding-left:15px;">
+            </div>
             <button class="btn-block" onclick="saveUrlAndConnect()">ESTABLISH CONNECTION</button>
         </div>
 
@@ -581,6 +585,7 @@
     // 1. INIT & CONFIG
     // ══════════════════════════════════════════════════════
     let dbUrl    = localStorage.getItem("gateway_db_url") || "";
+    let dbSecret = localStorage.getItem("gateway_db_secret") || "";
     let dbData   = null;
     let devFilter = 'all';
     let keyFilter = 'all';
@@ -674,10 +679,13 @@
         if (!inp.includes("firebaseio.com") && !inp.includes("firebasedatabase.app")) inp += ".firebaseio.com";
         localStorage.setItem("gateway_db_url", inp);
         dbUrl = inp;
+        // Lưu secret nếu có
+        const sec = document.getElementById('inputDbSecret').value.trim();
+        if (sec) { localStorage.setItem("gateway_db_secret", sec); dbSecret = sec; }
         appInit();
     }
 
-    function sanitizeUrl(url) { return url.endsWith("/") ? url + ".json" : url + "/.json"; }
+    function sanitizeUrl(url) { const base = url.endsWith("/") ? url + ".json" : url + "/.json"; return dbSecret ? base + "?auth=" + dbSecret : base; }
 
     function ensureDataStructure() {
         if (!dbData.ValidKeys)         dbData.ValidKeys = {};
@@ -702,7 +710,7 @@
     }
 
     function hardReset() {
-        if (confirm("Disconnect?")) { localStorage.removeItem("gateway_db_url"); location.reload(); }
+        if (confirm("Disconnect?")) { localStorage.removeItem("gateway_db_url"); localStorage.removeItem("gateway_db_secret"); location.reload(); }
     }
 
     // ══════════════════════════════════════════════════════
