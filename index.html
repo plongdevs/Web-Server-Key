@@ -925,7 +925,7 @@
         const arr    = crypto.getRandomValues(new Uint8Array(12));
         const rnd    = Array.from(arr).map(b => chars[b % chars.length]).join("");
         const k      = `ZEW-${rnd.slice(0,4)}-${rnd.slice(4,8)}-${rnd.slice(8,12)}`;
-        dbData.ValidKeys.NormalKey[k] = { Hours: hours, CreatedAt: new Date().toISOString(), Type: "NORMAL" };
+        dbData.ValidKeys.NormalKey[k] = { Hours: hours, ExpiryMs: Date.now() + hours * 3600000, CreatedAt: new Date().toISOString(), Type: "NORMAL" };
         _lastGeneratedKeys = [k];
         closeModal('modalKey');
         syncDB();
@@ -937,7 +937,7 @@
         if (!name) { showToast("Nhập tên Custom key!"); return; }
         const hours = parseInt(document.getElementById('customKeyHours').value) || 48;
         if (dbData.ValidKeys.CustomKey[name]) { showToast("Key đã tồn tại!"); return; }
-        dbData.ValidKeys.CustomKey[name] = { Hours: hours, CreatedAt: new Date().toISOString(), Type: 'CUSTOM' };
+        dbData.ValidKeys.CustomKey[name] = { Hours: hours, ExpiryMs: Date.now() + hours * 3600000, CreatedAt: new Date().toISOString(), Type: 'CUSTOM' };
         closeModal('modalCustomKey');
         document.getElementById('customKeyName').value = '';
         document.getElementById('customKeyPreview').innerText = '';
@@ -950,7 +950,7 @@
         const hours      = parseInt(document.getElementById('globalKeyHours').value) || (dbData.Config.KeyDurationHours || 48);
         const maxDevices = parseInt(document.getElementById('globalKeyMaxDevices').value) || 5;
         if (dbData.ValidKeys.GlobalKey[name]) { showToast("Key đã tồn tại!"); return; }
-        dbData.ValidKeys.GlobalKey[name] = { Hours: hours, CreatedAt: new Date().toISOString(), Type: 'GLOBAL', MaxDevices: maxDevices };
+        dbData.ValidKeys.GlobalKey[name] = { Hours: hours, ExpiryMs: Date.now() + hours * 3600000, CreatedAt: new Date().toISOString(), Type: 'GLOBAL', MaxDevices: maxDevices };
         _lastGeneratedKeys = [name];
         closeModal('modalGlobalKey');
         document.getElementById('globalKeyName').value = '';
@@ -1075,7 +1075,11 @@
         const bucket = type === 'custom' ? 'CustomKey' : type === 'global' ? 'GlobalKey' : 'NormalKey';
         let existing = dbData.ValidKeys[bucket][oldK];
         if (typeof existing !== 'object' || existing === null) existing = { CreatedAt: new Date().toISOString() };
-        if (hours > 0) existing.Hours = hours;
+        if (hours > 0) {
+            existing.Hours = hours;
+            const base = existing.CreatedAt ? new Date(existing.CreatedAt).getTime() : Date.now();
+            existing.ExpiryMs = base + hours * 3600000;
+        }
         if (type === 'global') {
             const maxDev = parseInt(document.getElementById('editMaxDevices').value) || 5;
             existing.MaxDevices = maxDev;
