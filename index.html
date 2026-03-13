@@ -426,10 +426,10 @@
                 <div style="width:42px;height:42px;border-radius:14px;background:rgba(0,229,255,0.12);display:flex;align-items:center;justify-content:center;font-size:1.3rem;">🔑</div>
                 <div>
                     <h3 style="margin:0;color:var(--accent);">Normal Key</h3>
-                    <div style="font-size:0.7rem;color:var(--muted);">Format: <b style="color:var(--accent);">ZEW-XXXX-XXXX-XXXX</b></div>
+                    <div style="font-size:0.7rem;color:var(--muted);">Format: <b style="color:var(--accent);">SP-XXXX-XXXX-XXXX</b></div>
                 </div>
             </div>
-            <div class="inp-group"><label class="inp-label">THỜI HẠN (GIỜ)</label><input type="number" class="input-std" id="keyHours" value="48" min="1" style="padding-left:15px"></div>
+            <div class="inp-group"><label class="inp-label">THỜI HẠN (GIỜ)</label><input type="number" class="input-std" id="keyHours" value="24" min="1" style="padding-left:15px"></div>
             <div style="background:rgba(0,229,255,0.05);border:1px solid rgba(0,229,255,0.15);border-radius:12px;padding:10px 14px;margin-bottom:16px;font-size:0.72rem;color:var(--muted);">
                 <i class="fas fa-info-circle" style="margin-right:6px;color:var(--accent);"></i>Key tạo bằng crypto random · Dùng 1 lần rồi xóa
             </div>
@@ -457,7 +457,7 @@
             </div>
             <div class="inp-group">
                 <label class="inp-label">THỜI HẠN (GIỜ)</label>
-                <input type="number" class="input-std" id="customKeyHours" value="48" min="1" style="padding-left:15px">
+                <input type="number" class="input-std" id="customKeyHours" value="24" min="1" style="padding-left:15px">
             </div>
             <div style="background:rgba(255,215,0,0.06);border:1px solid rgba(255,215,0,0.2);border-radius:12px;padding:10px 14px;margin-bottom:16px;font-size:0.72rem;color:var(--custom);">
                 <i class="fas fa-infinity" style="margin-right:6px;"></i>Custom key <b>tái sử dụng được</b> — không bị xóa sau khi dùng
@@ -483,7 +483,7 @@
                 <label class="inp-label">TÊN KEY</label>
                 <input type="text" class="input-std" id="globalKeyName" placeholder="Ví dụ: SERVER-2025, VIP-GLOBAL..." style="padding-left:15px;">
             </div>
-            <div class="inp-group"><label class="inp-label">THỜI HẠN (GIỜ)</label><input type="number" class="input-std" id="globalKeyHours" value="48" min="1" style="padding-left:15px;"></div>
+            <div class="inp-group"><label class="inp-label">THỜI HẠN (GIỜ)</label><input type="number" class="input-std" id="globalKeyHours" value="24" min="1" style="padding-left:15px;"></div>
             <div class="inp-group">
                 <label class="inp-label">GIỚI HẠN THIẾT BỊ</label>
                 <input type="number" class="input-std" id="globalKeyMaxDevices" value="5" min="1" max="100" style="padding-left:15px;">
@@ -924,7 +924,7 @@
         const chars  = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
         const arr    = crypto.getRandomValues(new Uint8Array(12));
         const rnd    = Array.from(arr).map(b => chars[b % chars.length]).join("");
-        const k      = `ZEW-${rnd.slice(0,4)}-${rnd.slice(4,8)}-${rnd.slice(8,12)}`;
+        const k      = `SP-${rnd.slice(0,4)}-${rnd.slice(4,8)}-${rnd.slice(8,12)}`;
         dbData.ValidKeys.NormalKey[k] = { Hours: hours, ExpiryMs: Date.now() + hours * 3600000, CreatedAt: new Date().toISOString(), Type: "NORMAL" };
         _lastGeneratedKeys = [k];
         closeModal('modalKey');
@@ -935,7 +935,7 @@
     function generateCustomKey() {
         const name  = document.getElementById('customKeyName').value.trim();
         if (!name) { showToast("Nhập tên Custom key!"); return; }
-        const hours = parseInt(document.getElementById('customKeyHours').value) || 48;
+        const hours = parseInt(document.getElementById('customKeyHours').value) || 24;
         if (dbData.ValidKeys.CustomKey[name]) { showToast("Key đã tồn tại!"); return; }
         dbData.ValidKeys.CustomKey[name] = { Hours: hours, ExpiryMs: Date.now() + hours * 3600000, CreatedAt: new Date().toISOString(), Type: 'CUSTOM' };
         closeModal('modalCustomKey');
@@ -947,7 +947,7 @@
     function generateGlobalKey() {
         const name = document.getElementById('globalKeyName').value.trim().toUpperCase();
         if (!name) { showToast("Nhập tên Global key!"); return; }
-        const hours      = parseInt(document.getElementById('globalKeyHours').value) || (dbData.Config.KeyDurationHours || 48);
+        const hours      = parseInt(document.getElementById('globalKeyHours').value) || (dbData.Config.KeyDurationHours || 24);
         const maxDevices = parseInt(document.getElementById('globalKeyMaxDevices').value) || 5;
         if (dbData.ValidKeys.GlobalKey[name]) { showToast("Key đã tồn tại!"); return; }
         dbData.ValidKeys.GlobalKey[name] = { Hours: hours, ExpiryMs: Date.now() + hours * 3600000, CreatedAt: new Date().toISOString(), Type: 'GLOBAL', MaxDevices: maxDevices };
